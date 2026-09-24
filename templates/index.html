@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- Machine Learning x Math Hero Banner -->
+<section class="text-center py-5 mb-5 position-relative">
+  <div class="fusion-badge mb-3">
+    <i class="fa-solid fa-atom"></i> MACHINE LEARNING MATHEMATICS ARCHITECTURE
+  </div>
+  
+  <h1 class="display-3 fw-extrabold text-white mb-3" style="font-family: var(--font-display); letter-spacing: -1.5px;">
+    BRIDGING <span class="gradient-text">ML ALGORITHMS</span> <br>WITH APPLIED MATHEMATICS
+  </h1>
+  
+  <p class="lead text-secondary mx-auto mb-4" style="max-width: 680px; font-size: 1.15rem;">
+    An interactive computational workstation fusing Machine Learning vector space mechanics, probability distribution engines, and matrix transformations.
+  </p>
+
+  <div class="d-flex justify-content-center gap-3">
+    <a href="#nodes" class="btn btn-fusion">
+      Launch Math Nodes <i class="fa-solid fa-arrow-down ms-1"></i>
+    </a>
+    <a href="https://github.com" target="_blank" class="btn btn-fusion-secondary">
+      <i class="fa-brands fa-github me-1"></i> Source Code
+    </a>
+  </div>
+</section>
+
+<!-- Interactive Math & ML Nodes -->
+<section id="nodes" class="py-3">
+  <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
+    <div>
+      <h3 class="fw-bold text-white mb-1" style="font-family: var(--font-display);">Computational Nodes</h3>
+      <p class="text-secondary small mb-0">Select an ML & Mathematics pipeline module to execute calculations</p>
+    </div>
+    <input type="text" id="program-search" class="form-control fusion-input w-auto" placeholder="Search ML & Math modules..." style="min-width: 280px;">
+  </div>
+
+  <div class="row g-4">
+    <!-- Node 1 -->
+    <div class="col-md-6 col-lg-4 program-card-col" data-title="Identity Matrix">
+      <div class="fusion-node p-4 h-100 d-flex flex-column justify-content-between">
+        <div>
+          <div class="d-flex align-items-center justify-content-between mb-3">
+            <div class="p-3 rounded-4" style="background: rgba(99, 102, 241, 0.15); color: #818CF8;">
+              <i class="fa-solid fa-cubes-stacked fa-xl"></i>
+            </div>
+            <span class="fusion-badge">ML MATRIX</span>
+          </div>
+          <h4 class="fw-bold text-white mb-2" style="font-family: var(--font-display);">Identity Matrix Engine</h4>
+          <p class="text-secondary small">Construct linear transformation identity states used for feature scaling and neural layer weight initialization.</p>
+        </div>
+        <a href="{{ url_for('identity_page') }}" class="btn btn-fusion w-100 mt-4">Run Matrix Node <i class="fa-solid fa-arrow-right fs-6"></i></a>
+      </div>
+    </div>
+
+    <!-- Node 2 -->
+    <div class="col-md-6 col-lg-4 program-card-col" data-title="Vector Operations">
+      <div class="fusion-node p-4 h-100 d-flex flex-column justify-content-between">
+        <div>
+          <div class="d-flex align-items-center justify-content-between mb-3">
+            <div class="p-3 rounded-4" style="background: rgba(168, 85, 247, 0.15); color: #C084FC;">
+              <i class="fa-solid fa-diagram-project fa-xl"></i>
+            </div>
+            <span class="fusion-badge" style="color: #C084FC; border-color: rgba(168, 85, 247, 0.3);">ML EMBEDDINGS</span>
+          </div>
+          <h4 class="fw-bold text-white mb-2" style="font-family: var(--font-display);">Vector Space Operations</h4>
+          <p class="text-secondary small">Execute high-dimensional vector addition, dot products, cross products, and embedding cosine metrics.</p>
+        </div>
+        <a href="{{ url_for('vector_page') }}" class="btn btn-fusion w-100 mt-4">Run Vector Node <i class="fa-solid fa-arrow-right fs-6"></i></a>
+      </div>
+    </div>
+
+    <!-- Node 3 -->
+    <div class="col-md-6 col-lg-4 program-card-col" data-title="Probability Calculator">
+      <div class="fusion-node p-4 h-100 d-flex flex-column justify-content-between">
+        <div>
+          <div class="d-flex align-items-center justify-content-between mb-3">
+            <div class="p-3 rounded-4" style="background: rgba(236, 72, 153, 0.15); color: #F472B6;">
+              <i class="fa-solid fa-chart-pie fa-xl"></i>
+            </div>
+            <span class="fusion-badge" style="color: #F472B6; border-color: rgba(236, 72, 153, 0.3);">BAYESIAN ML</span>
+          </div>
+          <h4 class="fw-bold text-white mb-2" style="font-family: var(--font-display);">Probability Core</h4>
+          <p class="text-secondary small">Compute event probabilities, ratio distributions, and statistical outcome likelihoods for classification models.</p>
+        </div>
+        <a href="{{ url_for('probability_page') }}" class="btn btn-fusion w-100 mt-4">Run Probability Node <i class="fa-solid fa-arrow-right fs-6"></i></a>
+      </div>
+    </div>
+
+    <!-- Node 4 -->
+    <div class="col-md-6 col-lg-6 program-card-col" data-title="Random Sequence Generator">
+      <div class="fusion-node p-4 h-100 d-flex flex-column justify-content-between">
+        <div>
+          <div class="d-flex align-items-center justify-content-between mb-3">
+            <div class="p-3 rounded-4" style="background: rgba(245, 158, 11, 0.15); color: #FBBF24;">
+              <i class="fa-solid fa-shuffle fa-xl"></i>
+            </div>
+            <span class="fusion-badge" style="color: #FBBF24; border-color: rgba(245, 158, 11, 0.3);">STOCHASTIC ML</span>
+          </div>
+          <h4 class="fw-bold text-white mb-2" style="font-family: var(--font-display);">Random Sampling Engine</h4>
+          <p class="text-secondary small">Generate stochastic data distributions, matrix initializers, and random sample sets for ML mini-batching.</p>
+        </div>
+        <a href="{{ url_for('random_page') }}" class="btn btn-fusion w-100 mt-4">Run Generator Node <i class="fa-solid fa-arrow-right fs-6"></i></a>
+      </div>
+    </div>
+
+    <!-- Node 5 -->
+    <div class="col-md-12 col-lg-6 program-card-col" data-title="Statistics Calculator">
+      <div class="fusion-node p-4 h-100 d-flex flex-column justify-content-between">
+        <div>
+          <div class="d-flex align-items-center justify-content-between mb-3">
+            <div class="p-3 rounded-4" style="background: rgba(16, 185, 129, 0.15); color: #34D399;">
+              <i class="fa-solid fa-chart-line fa-xl"></i>
+            </div>
+            <span class="fusion-badge" style="color: #34D399; border-color: rgba(16, 185, 129, 0.3);">ML ANALYTICS</span>
+          </div>
+          <h4 class="fw-bold text-white mb-2" style="font-family: var(--font-display);">Statistical ML Metrics</h4>
+          <p class="text-secondary small">Analyze feature datasets using Mean, Median, Mode, Variance, and Standard Deviation for model normalization.</p>
+        </div>
+        <a href="{{ url_for('statistics_page') }}" class="btn btn-fusion w-100 mt-4">Run Analytics Node <i class="fa-solid fa-arrow-right fs-6"></i></a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

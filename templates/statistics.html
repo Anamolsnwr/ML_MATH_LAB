@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center py-4">
+  <div class="col-lg-9">
+    <div class="fusion-node p-4 p-md-5">
+      
+      <!-- Title Block with Icon -->
+      <div class="d-flex align-items-center gap-3 mb-3">
+        <div class="p-3 rounded-4 d-flex align-items-center justify-content-center" 
+             style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(99, 102, 241, 0.2)); color: #34D399; width: 56px; height: 56px; border: 1px solid rgba(16, 185, 129, 0.3);">
+          <i class="fa-solid fa-chart-line fa-xl"></i>
+        </div>
+        <div>
+          <h2 class="fw-bold text-white mb-0" style="font-family: var(--font-display);">Statistical ML Metrics</h2>
+          <span class="text-secondary small font-monospace"><i class="fa-solid fa-code me-1 text-primary"></i> Backend: statistics_calc.py</span>
+        </div>
+      </div>
+
+      <!-- Description -->
+      <p class="text-secondary mb-4" style="font-size: 0.95rem;">
+        Analyze feature data distributions: compute Mean, Median, Mode, Variance, and Standard Deviation for normalization.
+      </p>
+
+      <!-- Input Form -->
+      <form id="stats-form" class="mb-4">
+        <div class="mb-3">
+          <label for="dataset-input" class="form-label text-white fw-semibold mb-2">
+            <i class="fa-solid fa-database me-2 text-info"></i>Dataset Array (comma-separated numbers)
+          </label>
+          <input type="text" id="dataset-input" class="form-control fusion-input" value="12, 15, 18, 22, 30, 30, 45" placeholder="e.g. 10, 20, 30, 40">
+          <div class="form-text text-secondary mt-2 small">
+            <i class="fa-solid fa-circle-info me-1"></i> Input raw numeric values separated by commas.
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="d-flex flex-wrap align-items-center gap-3 mt-4">
+          <button type="submit" class="btn btn-fusion">
+            <i class="fa-solid fa-play"></i> Run Program
+          </button>
+          <button type="button" id="clear-btn" class="btn btn-fusion-secondary" style="border-color: rgba(245, 158, 11, 0.4); color: #FBBF24 !important;">
+            <i class="fa-solid fa-eraser me-1"></i> Clear
+          </button>
+          <button type="reset" class="btn btn-fusion-secondary" style="border-color: rgba(239, 68, 68, 0.4); color: #F87171 !important;">
+            <i class="fa-solid fa-rotate-right me-1"></i> Reset
+          </button>
+        </div>
+      </form>
+
+      <!-- Terminal Output Header -->
+      <div class="d-flex align-items-center justify-content-between mb-2 mt-5">
+        <h5 class="fw-bold text-white mb-0" style="font-family: var(--font-display);">
+          <i class="fa-solid fa-terminal me-2" style="color: #34D399;"></i>Program Output
+        </h5>
+        <span class="fusion-badge"><i class="fa-solid fa-microchip"></i> STDOUT</span>
+      </div>
+
+      <!-- Terminal Output Box -->
+      <div id="output-terminal" class="output-box">
+        <span class="text-secondary">&gt;_ Click "Run Program" to execute script...</span>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

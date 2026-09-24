@@ -1,0 +1,195 @@
+/* ==========================================================================
+   ML Math Lab - Deep Quantum Obsidian Design System
+   ========================================================================== */
+
+:root {
+  --primary: #3B82F6;
+  --secondary: #8B5CF6;
+  --accent: #06B6D4;
+  --success: #10B981;
+  --bg-dark: #070B19;
+  --bg-card: rgba(15, 23, 42, 0.7);
+  --border-glass: rgba(255, 255, 255, 0.08);
+  --border-glow: rgba(59, 130, 246, 0.4);
+  --text-main: #F8FAFC;
+  --text-muted: #94A3B8;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: var(--bg-dark);
+  color: var(--text-main);
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* Background Glowing Mesh Spheres */
+body::before {
+  content: '';
+  position: fixed;
+  top: -15%;
+  left: -10%;
+  width: 55vw;
+  height: 55vw;
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, rgba(0,0,0,0) 70%);
+  z-index: -2;
+  pointer-events: none;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  bottom: -15%;
+  right: -10%;
+  width: 55vw;
+  height: 55vw;
+  background: radial-gradient(circle, rgba(6, 182, 212, 0.12) 0%, rgba(0,0,0,0) 70%);
+  z-index: -2;
+  pointer-events: none;
+}
+
+#particles-js {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  opacity: 0.55;
+}
+
+/* Gradient Typography */
+/* Gradient Typography */
+.text-gradient {
+  background: linear-gradient(135deg, #60A5FA, #A78BFA, #38BDF8);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Floating Symbols */
+.floating-symbol {
+  position: absolute;
+  font-size: 2.5rem;
+  color: var(--accent);
+  opacity: 0.2;
+  animation: float 7s ease-in-out infinite;
+  user-select: none;
+  pointer-events: none;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(10deg); }
+}
+
+/* Glassmorphism Cards */
+.glass-card {
+  background: var(--bg-card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-glass);
+  border-radius: 1.25rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.glass-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--primary), var(--accent), transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.glass-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(99, 102, 241, 0.35);
+  box-shadow: 0 16px 40px -10px rgba(59, 130, 246, 0.3);
+}
+
+.glass-card:hover::before {
+  opacity: 1;
+}
+
+/* Dynamic Buttons */
+.btn-gradient-primary {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: #FFFFFF !important;
+  border: none;
+  border-radius: 0.6rem;
+  font-weight: 500;
+  padding: 0.65rem 1.4rem;
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+  transition: all 0.3s ease;
+}
+
+.btn-gradient-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(139, 92, 246, 0.45);
+}
+
+.form-control.glass-input {
+  background: rgba(30, 41, 59, 0.6);
+  border: 1px solid var(--border-glass);
+  color: #F8FAFC !important;
+  border-radius: 0.6rem;
+  padding: 0.75rem 1rem;
+}
+
+.form-control.glass-input:focus {
+  background: rgba(30, 41, 59, 0.85);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 0.25rem rgba(59, 130, 246, 0.25);
+}
+
+/* Metric Display Output Box */
+.output-box {
+  background: #030712;
+  border: 1px solid var(--border-glass);
+  border-left: 4px solid var(--accent);
+  border-radius: 0.85rem;
+  padding: 1.5rem;
+  min-height: 140px;
+  font-family: 'Fira Code', monospace;
+  color: #38BDF8;
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.8);
+}
+
+.metric-badge {
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.75rem;
+  padding: 1rem;
+  text-align: center;
+}
+
+.metric-badge .val {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.metric-badge .lbl {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+#back-to-top {
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+  z-index: 99;
+  display: none;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+}

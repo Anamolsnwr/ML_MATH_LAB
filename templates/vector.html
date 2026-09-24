@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center py-4">
+  <div class="col-lg-9">
+    <div class="fusion-node p-4 p-md-5">
+      
+      <!-- Title Block with Icon -->
+      <div class="d-flex align-items-center gap-3 mb-3">
+        <div class="p-3 rounded-4 d-flex align-items-center justify-content-center" 
+             style="background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(99, 102, 241, 0.2)); color: #C084FC; width: 56px; height: 56px; border: 1px solid rgba(168, 85, 247, 0.3);">
+          <i class="fa-solid fa-diagram-project fa-xl"></i>
+        </div>
+        <div>
+          <h2 class="fw-bold text-white mb-0" style="font-family: var(--font-display);">Vector Space Operations</h2>
+          <span class="text-secondary small font-monospace"><i class="fa-solid fa-code me-1 text-primary"></i> Backend: vector_ops.py</span>
+        </div>
+      </div>
+
+      <!-- Description -->
+      <p class="text-secondary mb-4" style="font-size: 0.95rem;">
+        Compute vector addition, dot products, cross products, and embedding distances for high-dimensional feature spaces.
+      </p>
+
+      <!-- Input Form -->
+      <form id="vector-form" class="mb-4">
+        <div class="row g-3 mb-3">
+          <div class="col-md-6">
+            <label for="vector-a" class="form-label text-white fw-semibold mb-2">
+              <i class="fa-solid fa-arrows-to-dot me-2 text-info"></i>Vector A (comma-separated)
+            </label>
+            <input type="text" id="vector-a" class="form-control fusion-input" value="1, 2, 3" placeholder="e.g. 1, 2, 3">
+          </div>
+          <div class="col-md-6">
+            <label for="vector-b" class="form-label text-white fw-semibold mb-2">
+              <i class="fa-solid fa-arrows-to-dot me-2 text-info"></i>Vector B (comma-separated)
+            </label>
+            <input type="text" id="vector-b" class="form-control fusion-input" value="4, 5, 6" placeholder="e.g. 4, 5, 6">
+          </div>
+        </div>
+        <div class="form-text text-secondary mb-3 small">
+          <i class="fa-solid fa-circle-info me-1"></i> Both vectors must have equal dimension counts.
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="d-flex flex-wrap align-items-center gap-3 mt-4">
+          <button type="submit" class="btn btn-fusion">
+            <i class="fa-solid fa-play"></i> Run Program
+          </button>
+          <button type="button" id="clear-btn" class="btn btn-fusion-secondary" style="border-color: rgba(245, 158, 11, 0.4); color: #FBBF24 !important;">
+            <i class="fa-solid fa-eraser me-1"></i> Clear
+          </button>
+          <button type="reset" class="btn btn-fusion-secondary" style="border-color: rgba(239, 68, 68, 0.4); color: #F87171 !important;">
+            <i class="fa-solid fa-rotate-right me-1"></i> Reset
+          </button>
+        </div>
+      </form>
+
+      <!-- Terminal Output Header -->
+      <div class="d-flex align-items-center justify-content-between mb-2 mt-5">
+        <h5 class="fw-bold text-white mb-0" style="font-family: var(--font-display);">
+          <i class="fa-solid fa-terminal me-2" style="color: #C084FC;"></i>Program Output
+        </h5>
+        <span class="fusion-badge"><i class="fa-solid fa-microchip"></i> STDOUT</span>
+      </div>
+
+      <!-- Terminal Output Box -->
+      <div id="output-terminal" class="output-box">
+        <span class="text-secondary">&gt;_ Click "Run Program" to execute script...</span>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}
