@@ -34,6 +34,25 @@ def vector_page():
 def statistics_page():
     return render_template('statistics.html')
 
+@app.route("/linear-regression")
+def linear_regression_page():
+    return render_template("linear_regression.html")
+
+
+@app.route("/kmeans")
+def kmeans_page():
+    return render_template("kmeans.html")
+
+
+@app.route("/knn")
+def knn_page():
+    return render_template("knn.html")
+
+
+@app.route("/logistic-regression")
+def logistic_regression_page():
+    return render_template("logistic_regression.html")
+
 
 # --- API EXECUTION ENDPOINTS ---
 
