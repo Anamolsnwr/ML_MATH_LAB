@@ -2,6 +2,10 @@ from flask import Flask, render_template, request, jsonify
 import numpy as np
 import random
 import statistics
+from python_programs.linear_regression import run_linear_regression
+from python_programs.kmeans import run_kmeans
+from python_programs.knn import run_knn
+from python_programs.logistic_regression import run_logistic_regression
 
 app = Flask(__name__)
 
