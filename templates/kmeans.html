@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+{% block title %}K-Means Clustering — ML Math Lab{% endblock %}
+
+{% block content %}
+<section class="program-page">
+  <div class="container">
+
+    <a href="{{ url_for('home') }}#nodes" class="back-link"><i class="fa-solid fa-arrow-left"></i> All programs</a>
+
+    <div class="program-header" data-aos="fade-up">
+      <div class="program-icon-lg"><i class="fa-solid fa-circle-nodes"></i></div>
+      <div>
+        <h1>K-Means Clustering</h1>
+        <p>Partition 2D points into k clusters using Lloyd's iterative centroid algorithm, computed from scratch.</p>
+      </div>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-lg-6" data-aos="fade-up">
+        <div class="panel glass">
+          <h5 class="panel-title"><i class="fa-solid fa-sliders"></i> Input</h5>
+
+          <div class="mb-3">
+            <label class="form-label" for="pointsInput">2D Points (x y, one point per line)</label>
+            <textarea class="form-control mml-input" id="pointsInput" rows="8" placeholder="1 2&#10;1.5 1.8&#10;5 8&#10;8 8&#10;1 0.6&#10;9 11&#10;8 2&#10;10 2&#10;9 3"></textarea>
+          </div>
+          <div class="mb-3">
+            <label class="form-label" for="kInput">Number of clusters (k)</label>
+            <input type="number" min="1" max="10" class="form-control mml-input" id="kInput" value="3" placeholder="e.g. 3">
+          </div>
+          <p class="hint"><i class="fa-solid fa-circle-info"></i> Each row must contain exactly two numbers (x and y).</p>
+
+          <div class="btn-row">
+            <button class="btn btn-gradient" id="runBtn"><i class="fa-solid fa-play"></i> Run Program</button>
+            <button class="btn btn-outline-glass" id="clearBtn"><i class="fa-solid fa-eraser"></i> Clear</button>
+            <button class="btn btn-outline-glass" id="resetBtn"><i class="fa-solid fa-rotate-left"></i> Reset</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-6" data-aos="fade-up" data-aos-delay="100">
+        <div class="panel glass output-panel">
+          <h5 class="panel-title"><i class="fa-solid fa-terminal"></i> Output</h5>
+          <div id="outputBox" class="output-box">
+            <p class="output-placeholder">Run the program to see results here.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const CLUSTER_COLORS = ['#38BDF8', '#F472B6', '#34D399', '#FBBF24', '#A78BFA', '#FB923C', '#F87171', '#4ADE80'];
+
+function buildKMeansPlot(clusters, points) {
+  const W = 320, H = 220, pad = 30;
+  const allX = points.map(p => p[0]);
+  const allY = points.map(p => p[1]);
+  clusters.forEach(c => {
+    allX.push(c.centroid[0]);
+    allY.push(c.centroid[1]);
+  });
+  const xMin = Math.min(...allX), xMax = Math.max(...allX);
+  const yMin = Math.min(...allY), yMax = Math.max(...allY);
+  const sx = x => pad + (xMax === xMin ? (W - 2 * pad) / 2 : ((x - xMin) / (xMax - xMin)) * (W - 2 * pad));
+  const sy = y => H - pad - (yMax === yMin ? (H - 2 * pad) / 2 : ((y - yMin) / (yMax - yMin)) * (H - 2 * pad));
+
+  let dotsSvg = '';
+  clusters.forEach((c, idx) => {
+    const color = CLUSTER_COLORS[idx % CLUSTER_COLORS.length];
+    c.points.forEach(p => {
+      dotsSvg += `<circle cx="${sx(p[0])}" cy="${sy(p[1])}" r="4" fill="${color}" opacity="0.85"></circle>`;
+    });
+    // Centroid marker (cross or diamond)
+    const cx = sx(c.centroid[0]), cy = sy(c.centroid[1]);
+    dotsSvg += `
+      <polygon points="${cx},${cy-7} ${cx+7},${cy} ${cx},${cy+7} ${cx-7},${cy}" fill="${color}" stroke="#FFFFFF" stroke-width="1.5"></polygon>
+    `;
+  });
+
+  return `<svg viewBox="0 0 ${W} ${H}" class="plot-svg">
+    ${dotsSvg}
+  </svg>`;
+}
+
+document.getElementById('runBtn').addEventListener('click', async () => {
+  const points = document.getElementById('pointsInput').value.trim();
+  const k = document.getElementById('kInput').value.trim();
+  if (!points || !k) return showToast('Please enter both points and k.', 'error');
+
+  setLoading(true);
+  try {
+    const res = await fetch('/api/kmeans', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({points: points, k: k})
+    });
+    const data = await res.json();
+    setLoading(false);
+    if (!data.success) return showToast(data.error, 'error');
+
+    const r = data.result;
+    const clusterChips = r.clusters.map((c, idx) => {
+      const col = CLUSTER_COLORS[idx % CLUSTER_COLORS.length];
+      return `<span class="cluster-chip" style="border: 1px solid ${col};"><span class="dot" style="background:${col};"></span> Cluster ${c.cluster_id}: ${c.size} pts</span>`;
+    }).join(' ');
+
+    const rows = r.clusters.map((c, idx) => {
+      const col = CLUSTER_COLORS[idx % CLUSTER_COLORS.length];
+      return `
+        <tr>
+          <td><span class="dot" style="background:${col};"></span> Cluster ${c.cluster_id}</td>
+          <td>[${c.centroid.join(', ')}]</td>
+          <td>${c.size}</td>
+        </tr>
+      `;
+    }).join('');
+
+    renderOutput(`
+      ${buildKMeansPlot(r.clusters, r.points)}
+      <div style="margin: 12px 0;">${clusterChips}</div>
+      <div class="result-grid" style="margin-bottom:14px;">
+        <div class="result-row"><span>Clusters (k)</span><strong>${r.k}</strong></div>
+        <div class="result-row"><span>Iterations to Converge</span><strong>${r.iterations}</strong></div>
+      </div>
+      <table class="data-table">
+        <thead><tr><th>Cluster</th><th>Centroid [x, y]</th><th>Size</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    `);
+    showToast('K-Means executed successfully.', 'success');
+  } catch (e) {
+    setLoading(false);
+    showToast('Something went wrong contacting the backend.', 'error');
+  }
+});
+
+document.getElementById('clearBtn').addEventListener('click', () => resetOutput());
+document.getElementById('resetBtn').addEventListener('click', () => {
+  document.getElementById('pointsInput').value = '';
+  document.getElementById('kInput').value = '3';
+  resetOutput();
+});
+</script>
+{% endblock %}
