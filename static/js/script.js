@@ -98,22 +98,57 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Search Bar Filter for Index Page
+  // Filter & Search Controls for Index Page
   const searchInput = document.getElementById('program-search');
-  if (searchInput) {
-    searchInput.addEventListener('input', (e) => {
-      const query = e.target.value.toLowerCase();
-      const cards = document.querySelectorAll('.program-card-col');
-      cards.forEach(card => {
-        const title = card.getAttribute('data-title') ? card.getAttribute('data-title').toLowerCase() : '';
-        const content = card.textContent.toLowerCase();
-        if (title.includes(query) || content.includes(query)) {
-          card.style.display = 'block';
-        } else {
-          card.style.display = 'none';
-        }
+  const filterButtons = document.querySelectorAll('.filter-btn');
+  let currentCategory = 'all';
+
+  function applyFilters() {
+    const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
+    const cards = document.querySelectorAll('.program-card-col');
+
+    cards.forEach(card => {
+      const cardCategory = card.getAttribute('data-category');
+      const title = card.getAttribute('data-title') ? card.getAttribute('data-title').toLowerCase() : '';
+      const text = card.textContent.toLowerCase();
+
+      const matchesCat = currentCategory === 'all' || cardCategory === currentCategory;
+      const matchesSearch = !query || title.includes(query) || text.includes(query);
+
+      card.style.display = (matchesCat && matchesSearch) ? 'block' : 'none';
+    });
+
+    // Toggle entire section visibility if all cards within it are hidden
+    const mathSection = document.getElementById('math-section');
+    const mlSection = document.getElementById('ml-section');
+    if (mathSection) {
+      const hasVisibleMath = mathSection.querySelectorAll('.program-card-col[style*="display: block"]').length > 0;
+      mathSection.style.display = (currentCategory === 'all' || currentCategory === 'math') && hasVisibleMath ? 'block' : (currentCategory === 'all' && !query ? 'block' : (currentCategory === 'math' ? 'block' : 'none'));
+    }
+    if (mlSection) {
+      const hasVisibleMl = mlSection.querySelectorAll('.program-card-col[style*="display: block"]').length > 0;
+      mlSection.style.display = (currentCategory === 'all' || currentCategory === 'ml') && hasVisibleMl ? 'block' : (currentCategory === 'all' && !query ? 'block' : (currentCategory === 'ml' ? 'block' : 'none'));
+    }
+  }
+
+  if (filterButtons.length > 0) {
+    filterButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterButtons.forEach(b => {
+          b.classList.remove('btn-fusion', 'active');
+          b.classList.add('btn-fusion-secondary');
+        });
+        btn.classList.remove('btn-fusion-secondary');
+        btn.classList.add('btn-fusion', 'active');
+
+        currentCategory = btn.getAttribute('data-category');
+        applyFilters();
       });
     });
   }
 
-});
+  if (searchInput) {
+    searchInput.addEventListener('input', applyFilters);
+  }
+
+});

@@ -4,7 +4,7 @@
 <!-- Machine Learning x Math Hero Banner -->
 <section class="text-center py-5 mb-5 position-relative">
   <div class="fusion-badge mb-3">
-    <i class="fa-solid fa-atom"></i> MACHINE LEARNING MATHEMATICS ARCHITECTURE
+    <i class="fa-solid fa-atom"></i> MACHINE LEARNING & MATHEMATICS ARCHITECTURE
   </div>
   
   <h1 class="display-3 fw-extrabold text-white mb-3" style="font-family: var(--font-display); letter-spacing: -1.5px;">
@@ -12,180 +12,229 @@
   </h1>
   
   <p class="lead text-secondary mx-auto mb-4" style="max-width: 680px; font-size: 1.15rem;">
-    An interactive computational workstation fusing Machine Learning vector space mechanics, probability distribution engines, and matrix transformations.
+    An interactive computational workstation cleanly separating core Mathematical Calculation engines from Machine Learning Algorithms implemented from scratch.
   </p>
 
   <div class="d-flex justify-content-center gap-3">
-    <a href="#nodes" class="btn btn-fusion">
-      Launch Math Nodes <i class="fa-solid fa-arrow-down ms-1"></i>
+    <a href="#math-section" class="btn btn-fusion-secondary">
+      <i class="fa-solid fa-square-root-variable me-1 text-info"></i> Math Modules
     </a>
-    <a href="https://github.com" target="_blank" class="btn btn-fusion-secondary">
-      <i class="fa-brands fa-github me-1"></i> Source Code
+    <a href="#ml-section" class="btn btn-fusion">
+      <i class="fa-solid fa-brain me-1"></i> ML Algorithms
     </a>
   </div>
 </section>
 
-<!-- Interactive Math & ML Nodes -->
-<section id="nodes" class="py-3">
-  <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
-    <div>
-      <h3 class="fw-bold text-white mb-1" style="font-family: var(--font-display);">Computational Nodes</h3>
-      <p class="text-secondary small mb-0">Select an ML & Mathematics pipeline module to execute calculations</p>
+<!-- Filter Controls & Search Bar -->
+<section id="nodes" class="py-2 mb-4">
+  <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 p-3 rounded-4" style="background: rgba(17, 24, 39, 0.45); border: 1px solid rgba(255, 255, 255, 0.08);">
+    <!-- Category Filter Tabs -->
+    <div class="d-flex flex-wrap gap-2" id="category-filters">
+      <button class="btn btn-sm btn-fusion px-3 filter-btn active" data-category="all">
+        <i class="fa-solid fa-layer-group me-1"></i> All Modules (9)
+      </button>
+      <button class="btn btn-sm btn-fusion-secondary px-3 filter-btn" data-category="math">
+        <i class="fa-solid fa-calculator me-1 text-info"></i> Mathematics (5)
+      </button>
+      <button class="btn btn-sm btn-fusion-secondary px-3 filter-btn" data-category="ml">
+        <i class="fa-solid fa-brain me-1 text-pink-400" style="color:#F472B6;"></i> Machine Learning (4)
+      </button>
     </div>
-    <input type="text" id="program-search" class="form-control fusion-input w-auto" placeholder="Search ML & Math modules..." style="min-width: 280px;">
+
+    <!-- Search Input -->
+    <div class="position-relative" style="min-width: 280px;">
+      <input type="text" id="program-search" class="form-control fusion-input w-100" placeholder="Search modules & algorithms..." style="padding-left: 2.5rem;">
+      <i class="fa-solid fa-magnifying-glass position-absolute text-secondary" style="left: 1rem; top: 50%; transform: translateY(-50%); font-size: 0.85rem;"></i>
+    </div>
+  </div>
+</section>
+
+<!-- ========================================================================= -->
+<!-- 1. MATHEMATICAL CALCULATION MODULES -->
+<!-- ========================================================================= -->
+<section id="math-section" class="category-block mb-5">
+  <div class="d-flex align-items-center justify-content-between mb-4 pb-2 border-bottom border-secondary border-opacity-10">
+    <div>
+      <div class="d-flex align-items-center gap-2 mb-1">
+        <span class="fusion-badge" style="color: #38BDF8; border-color: rgba(56, 189, 248, 0.3); background: rgba(56, 189, 248, 0.1);">
+          <i class="fa-solid fa-square-root-variable"></i> FOUNDATIONAL MATHEMATICS
+        </span>
+      </div>
+      <h3 class="fw-bold text-white mb-0" style="font-family: var(--font-display);">Mathematical Calculation Modules</h3>
+      <p class="text-secondary small mb-0">Linear algebra transformations, vector calculus, stochastic sampling, and descriptive statistics</p>
+    </div>
   </div>
 
   <div class="row g-4">
-    <!-- Node 1 -->
-    <div class="col-md-6 col-lg-4 program-card-col" data-title="Identity Matrix">
+    <!-- Math 1: Identity Matrix -->
+    <div class="col-md-6 col-lg-4 program-card-col" data-category="math" data-title="Identity Matrix">
       <div class="fusion-node p-4 h-100 d-flex flex-column justify-content-between">
         <div>
           <div class="d-flex align-items-center justify-content-between mb-3">
             <div class="p-3 rounded-4" style="background: rgba(99, 102, 241, 0.15); color: #818CF8;">
               <i class="fa-solid fa-cubes-stacked fa-xl"></i>
             </div>
-            <span class="fusion-badge">ML MATRIX</span>
+            <span class="fusion-badge">MATRIX</span>
           </div>
           <h4 class="fw-bold text-white mb-2" style="font-family: var(--font-display);">Identity Matrix Engine</h4>
           <p class="text-secondary small">Construct linear transformation identity states used for feature scaling and neural layer weight initialization.</p>
         </div>
-        <a href="{{ url_for('identity_page') }}" class="btn btn-fusion w-100 mt-4">Run Matrix Node <i class="fa-solid fa-arrow-right fs-6"></i></a>
+        <a href="{{ url_for('identity_page') }}" class="btn btn-fusion w-100 mt-4">Run Matrix Module <i class="fa-solid fa-arrow-right fs-6"></i></a>
       </div>
     </div>
 
-    <!-- Node 2 -->
-    <div class="col-md-6 col-lg-4 program-card-col" data-title="Vector Operations">
+    <!-- Math 2: Vector Operations -->
+    <div class="col-md-6 col-lg-4 program-card-col" data-category="math" data-title="Vector Operations">
       <div class="fusion-node p-4 h-100 d-flex flex-column justify-content-between">
         <div>
           <div class="d-flex align-items-center justify-content-between mb-3">
             <div class="p-3 rounded-4" style="background: rgba(168, 85, 247, 0.15); color: #C084FC;">
               <i class="fa-solid fa-diagram-project fa-xl"></i>
             </div>
-            <span class="fusion-badge" style="color: #C084FC; border-color: rgba(168, 85, 247, 0.3);">ML EMBEDDINGS</span>
+            <span class="fusion-badge" style="color: #C084FC; border-color: rgba(168, 85, 247, 0.3);">VECTORS</span>
           </div>
           <h4 class="fw-bold text-white mb-2" style="font-family: var(--font-display);">Vector Space Operations</h4>
           <p class="text-secondary small">Execute high-dimensional vector addition, dot products, cross products, and embedding cosine metrics.</p>
         </div>
-        <a href="{{ url_for('vector_page') }}" class="btn btn-fusion w-100 mt-4">Run Vector Node <i class="fa-solid fa-arrow-right fs-6"></i></a>
+        <a href="{{ url_for('vector_page') }}" class="btn btn-fusion w-100 mt-4">Run Vector Module <i class="fa-solid fa-arrow-right fs-6"></i></a>
       </div>
     </div>
 
-    <!-- Node 3 -->
-    <div class="col-md-6 col-lg-4 program-card-col" data-title="Probability Calculator">
+    <!-- Math 3: Probability Calculator -->
+    <div class="col-md-6 col-lg-4 program-card-col" data-category="math" data-title="Probability Calculator">
       <div class="fusion-node p-4 h-100 d-flex flex-column justify-content-between">
         <div>
           <div class="d-flex align-items-center justify-content-between mb-3">
             <div class="p-3 rounded-4" style="background: rgba(236, 72, 153, 0.15); color: #F472B6;">
               <i class="fa-solid fa-chart-pie fa-xl"></i>
             </div>
-            <span class="fusion-badge" style="color: #F472B6; border-color: rgba(236, 72, 153, 0.3);">BAYESIAN ML</span>
+            <span class="fusion-badge" style="color: #F472B6; border-color: rgba(236, 72, 153, 0.3);">PROBABILITY</span>
           </div>
           <h4 class="fw-bold text-white mb-2" style="font-family: var(--font-display);">Probability Core</h4>
           <p class="text-secondary small">Compute event probabilities, ratio distributions, and statistical outcome likelihoods for classification models.</p>
         </div>
-        <a href="{{ url_for('probability_page') }}" class="btn btn-fusion w-100 mt-4">Run Probability Node <i class="fa-solid fa-arrow-right fs-6"></i></a>
+        <a href="{{ url_for('probability_page') }}" class="btn btn-fusion w-100 mt-4">Run Probability Module <i class="fa-solid fa-arrow-right fs-6"></i></a>
       </div>
     </div>
 
-    <!-- Node 4 -->
-    <div class="col-md-6 col-lg-6 program-card-col" data-title="Random Sequence Generator">
+    <!-- Math 4: Random Generator -->
+    <div class="col-md-6 col-lg-6 program-card-col" data-category="math" data-title="Random Sequence Generator">
       <div class="fusion-node p-4 h-100 d-flex flex-column justify-content-between">
         <div>
           <div class="d-flex align-items-center justify-content-between mb-3">
             <div class="p-3 rounded-4" style="background: rgba(245, 158, 11, 0.15); color: #FBBF24;">
               <i class="fa-solid fa-shuffle fa-xl"></i>
             </div>
-            <span class="fusion-badge" style="color: #FBBF24; border-color: rgba(245, 158, 11, 0.3);">STOCHASTIC ML</span>
+            <span class="fusion-badge" style="color: #FBBF24; border-color: rgba(245, 158, 11, 0.3);">STOCHASTIC</span>
           </div>
           <h4 class="fw-bold text-white mb-2" style="font-family: var(--font-display);">Random Sampling Engine</h4>
           <p class="text-secondary small">Generate stochastic data distributions, matrix initializers, and random sample sets for ML mini-batching.</p>
         </div>
-        <a href="{{ url_for('random_page') }}" class="btn btn-fusion w-100 mt-4">Run Generator Node <i class="fa-solid fa-arrow-right fs-6"></i></a>
+        <a href="{{ url_for('random_page') }}" class="btn btn-fusion w-100 mt-4">Run Generator Module <i class="fa-solid fa-arrow-right fs-6"></i></a>
       </div>
     </div>
 
-    <!-- Node 5 -->
-    <div class="col-md-12 col-lg-6 program-card-col" data-title="Statistics Calculator">
+    <!-- Math 5: Statistics Calculator -->
+    <div class="col-md-12 col-lg-6 program-card-col" data-category="math" data-title="Statistics Calculator">
       <div class="fusion-node p-4 h-100 d-flex flex-column justify-content-between">
         <div>
           <div class="d-flex align-items-center justify-content-between mb-3">
             <div class="p-3 rounded-4" style="background: rgba(16, 185, 129, 0.15); color: #34D399;">
               <i class="fa-solid fa-chart-line fa-xl"></i>
             </div>
-            <span class="fusion-badge" style="color: #34D399; border-color: rgba(16, 185, 129, 0.3);">ML ANALYTICS</span>
+            <span class="fusion-badge" style="color: #34D399; border-color: rgba(16, 185, 129, 0.3);">STATISTICS</span>
           </div>
-          <h4 class="fw-bold text-white mb-2" style="font-family: var(--font-display);">Statistical ML Metrics</h4>
-          <p class="text-secondary small">Analyze feature datasets using Mean, Median, Mode, Variance, and Standard Deviation for model normalization.</p>
+          <h4 class="fw-bold text-white mb-2" style="font-family: var(--font-display);">Statistical Metrics</h4>
+          <p class="text-secondary small">Analyze feature datasets using Mean, Median, Mode, Sample Variance, and Standard Deviation for model normalization.</p>
         </div>
-        <a href="{{ url_for('statistics_page') }}" class="btn btn-fusion w-100 mt-4">Run Analytics Node <i class="fa-solid fa-arrow-right fs-6"></i></a>
+        <a href="{{ url_for('statistics_page') }}" class="btn btn-fusion w-100 mt-4">Run Analytics Module <i class="fa-solid fa-arrow-right fs-6"></i></a>
       </div>
     </div>
+  </div>
+</section>
 
-    <!-- Node 6 -->
-    <div class="col-md-6 col-lg-4 program-card-col" data-title="Linear Regression">
+<!-- ========================================================================= -->
+<!-- 2. MACHINE LEARNING ALGORITHMS -->
+<!-- ========================================================================= -->
+<section id="ml-section" class="category-block mb-5">
+  <div class="d-flex align-items-center justify-content-between mb-4 pb-2 border-bottom border-secondary border-opacity-10">
+    <div>
+      <div class="d-flex align-items-center gap-2 mb-1">
+        <span class="fusion-badge" style="color: #F472B6; border-color: rgba(244, 114, 182, 0.3); background: rgba(244, 114, 182, 0.1);">
+          <i class="fa-solid fa-brain"></i> FROM-SCRATCH ALGORITHMS
+        </span>
+      </div>
+      <h3 class="fw-bold text-white mb-0" style="font-family: var(--font-display);">Machine Learning Algorithms</h3>
+      <p class="text-secondary small mb-0">Supervised regression & classification, Lloyd's k-means clustering, and majority-vote instance classifiers</p>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <!-- ML 1: Linear Regression -->
+    <div class="col-md-6 col-lg-6 program-card-col" data-category="ml" data-title="Linear Regression">
       <div class="fusion-node p-4 h-100 d-flex flex-column justify-content-between">
         <div>
           <div class="d-flex align-items-center justify-content-between mb-3">
             <div class="p-3 rounded-4" style="background: rgba(14, 165, 233, 0.15); color: #38BDF8;">
               <i class="fa-solid fa-arrow-trend-up fa-xl"></i>
             </div>
-            <span class="fusion-badge" style="color: #38BDF8; border-color: rgba(14, 165, 233, 0.3);">ML REGRESSION</span>
+            <span class="fusion-badge" style="color: #38BDF8; border-color: rgba(14, 165, 233, 0.3);">SUPERVISED</span>
           </div>
-          <h4 class="fw-bold text-white mb-2" style="font-family: var(--font-display);">Linear Regression Engine</h4>
-          <p class="text-secondary small">Fit a least-squares line to feature-target pairs and predict unseen values, computed from scratch.</p>
+          <h4 class="fw-bold text-white mb-2" style="font-family: var(--font-display);">Linear Regression</h4>
+          <p class="text-secondary small">Fit a least-squares straight line to feature-target pairs, compute R&sup2; fit quality, and predict continuous target values.</p>
         </div>
-        <a href="{{ url_for('linear_regression_page') }}" class="btn btn-fusion w-100 mt-4">Run Regression Node <i class="fa-solid fa-arrow-right fs-6"></i></a>
+        <a href="{{ url_for('linear_regression_page') }}" class="btn btn-fusion w-100 mt-4">Run Linear Regression <i class="fa-solid fa-arrow-right fs-6"></i></a>
       </div>
     </div>
 
-    <!-- Node 7 -->
-    <div class="col-md-6 col-lg-4 program-card-col" data-title="K-Means Clustering">
+    <!-- ML 2: K-Means Clustering -->
+    <div class="col-md-6 col-lg-6 program-card-col" data-category="ml" data-title="K-Means Clustering">
       <div class="fusion-node p-4 h-100 d-flex flex-column justify-content-between">
         <div>
           <div class="d-flex align-items-center justify-content-between mb-3">
             <div class="p-3 rounded-4" style="background: rgba(6, 182, 212, 0.15); color: #22D3EE;">
               <i class="fa-solid fa-circle-nodes fa-xl"></i>
             </div>
-            <span class="fusion-badge" style="color: #22D3EE; border-color: rgba(6, 182, 212, 0.3);">UNSUPERVISED ML</span>
+            <span class="fusion-badge" style="color: #22D3EE; border-color: rgba(6, 182, 212, 0.3);">UNSUPERVISED</span>
           </div>
           <h4 class="fw-bold text-white mb-2" style="font-family: var(--font-display);">K-Means Clustering</h4>
-          <p class="text-secondary small">Partition unlabeled feature vectors into k clusters using Lloyd's iterative centroid algorithm.</p>
+          <p class="text-secondary small">Partition unlabeled 2D feature coordinates into k distinct clusters using iterative centroid updates with SVG visualization.</p>
         </div>
-        <a href="{{ url_for('kmeans_page') }}" class="btn btn-fusion w-100 mt-4">Run Clustering Node <i class="fa-solid fa-arrow-right fs-6"></i></a>
+        <a href="{{ url_for('kmeans_page') }}" class="btn btn-fusion w-100 mt-4">Run K-Means Clustering <i class="fa-solid fa-arrow-right fs-6"></i></a>
       </div>
     </div>
 
-    <!-- Node 8 -->
-    <div class="col-md-6 col-lg-4 program-card-col" data-title="K-Nearest Neighbors">
+    <!-- ML 3: K-Nearest Neighbors -->
+    <div class="col-md-6 col-lg-6 program-card-col" data-category="ml" data-title="K-Nearest Neighbors">
       <div class="fusion-node p-4 h-100 d-flex flex-column justify-content-between">
         <div>
           <div class="d-flex align-items-center justify-content-between mb-3">
             <div class="p-3 rounded-4" style="background: rgba(249, 115, 22, 0.15); color: #FB923C;">
               <i class="fa-solid fa-share-nodes fa-xl"></i>
             </div>
-            <span class="fusion-badge" style="color: #FB923C; border-color: rgba(249, 115, 22, 0.3);">ML CLASSIFICATION</span>
+            <span class="fusion-badge" style="color: #FB923C; border-color: rgba(249, 115, 22, 0.3);">CLASSIFICATION</span>
           </div>
-          <h4 class="fw-bold text-white mb-2" style="font-family: var(--font-display);">K-Nearest Neighbors</h4>
-          <p class="text-secondary small">Classify a query vector by majority vote among its k closest labeled neighbors in feature space.</p>
+          <h4 class="fw-bold text-white mb-2" style="font-family: var(--font-display);">K-Nearest Neighbors (KNN)</h4>
+          <p class="text-secondary small">Classify a query vector by majority vote among its k closest Euclidean neighbors in N-dimensional feature space.</p>
         </div>
-        <a href="{{ url_for('knn_page') }}" class="btn btn-fusion w-100 mt-4">Run KNN Node <i class="fa-solid fa-arrow-right fs-6"></i></a>
+        <a href="{{ url_for('knn_page') }}" class="btn btn-fusion w-100 mt-4">Run KNN Classifier <i class="fa-solid fa-arrow-right fs-6"></i></a>
       </div>
     </div>
 
-    <!-- Node 9 -->
-    <div class="col-md-12 col-lg-4 program-card-col" data-title="Logistic Regression">
+    <!-- ML 4: Logistic Regression -->
+    <div class="col-md-6 col-lg-6 program-card-col" data-category="ml" data-title="Logistic Regression">
       <div class="fusion-node p-4 h-100 d-flex flex-column justify-content-between">
         <div>
           <div class="d-flex align-items-center justify-content-between mb-3">
             <div class="p-3 rounded-4" style="background: rgba(244, 63, 94, 0.15); color: #FB7185;">
               <i class="fa-solid fa-wave-square fa-xl"></i>
             </div>
-            <span class="fusion-badge" style="color: #FB7185; border-color: rgba(244, 63, 94, 0.3);">ML CLASSIFICATION</span>
+            <span class="fusion-badge" style="color: #FB7185; border-color: rgba(244, 63, 94, 0.3);">GRADIENT DESCENT</span>
           </div>
           <h4 class="fw-bold text-white mb-2" style="font-family: var(--font-display);">Logistic Regression</h4>
-          <p class="text-secondary small">Train a binary classifier via gradient descent on the sigmoid activation, computed from scratch.</p>
+          <p class="text-secondary small">Train a binary classification model with batch gradient descent and sigmoid activation, evaluating probability outputs.</p>
         </div>
-        <a href="{{ url_for('logistic_regression_page') }}" class="btn btn-fusion w-100 mt-4">Run Logistic Node <i class="fa-solid fa-arrow-right fs-6"></i></a>
+        <a href="{{ url_for('logistic_regression_page') }}" class="btn btn-fusion w-100 mt-4">Run Logistic Classifier <i class="fa-solid fa-arrow-right fs-6"></i></a>
       </div>
     </div>
   </div>
