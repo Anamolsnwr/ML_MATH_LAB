@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% block title %}Logistic Regression — ML Math Lab{% endblock %}
+
+{% block content %}
+<section class="program-page">
+  <div class="container">
+
+    <a href="{{ url_for('home') }}#programs" class="back-link"><i class="fa-solid fa-arrow-left"></i> All programs</a>
+
+    <div class="program-header" data-aos="fade-up">
+      <div class="program-icon-lg"><i class="fa-solid fa-wave-square"></i></div>
+      <div>
+        <h1>Logistic Regression</h1>
+        <p>Train a binary classifier with gradient descent and the sigmoid function, implemented from scratch with NumPy.</p>
+      </div>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-lg-6" data-aos="fade-up">
+        <div class="panel glass">
+          <h5 class="panel-title"><i class="fa-solid fa-sliders"></i> Input</h5>
+
+          <div class="mb-3">
+            <label class="form-label" for="trainingData">Training data — features then 0/1 label, one row per line</label>
+            <textarea class="form-control mml-input" id="trainingData" rows="8" placeholder="0.5 0&#10;1.0 0&#10;1.5 0&#10;3.0 1&#10;3.5 1&#10;4.0 1"></textarea>
+          </div>
+          <div class="mb-3">
+            <label class="form-label" for="queryPoint">Query point to classify (optional)</label>
+            <input type="text" class="form-control mml-input" id="queryPoint" placeholder="e.g. 2.2">
+          </div>
+          <p class="hint"><i class="fa-solid fa-circle-info"></i> Labels must be 0 or 1. Trains for 1000 epochs at a learning rate of 0.1.</p>
+
+          <div class="btn-row">
+            <button class="btn btn-gradient" id="runBtn"><i class="fa-solid fa-play"></i> Run Program</button>
+            <button class="btn btn-outline-glass" id="clearBtn"><i class="fa-solid fa-eraser"></i> Clear</button>
+            <button class="btn btn-outline-glass" id="resetBtn"><i class="fa-solid fa-rotate-left"></i> Reset</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-6" data-aos="fade-up" data-aos-delay="100">
+        <div class="panel glass output-panel">
+          <h5 class="panel-title"><i class="fa-solid fa-terminal"></i> Output</h5>
+          <div id="outputBox" class="output-box">
+            <p class="output-placeholder">Run the program to see results here.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.getElementById('runBtn').addEventListener('click', async () => {
+  const trainingData = document.getElementById('trainingData').value.trim();
+  const queryPoint = document.getElementById('queryPoint').value.trim();
+  if (!trainingData) return showToast('Please enter training data.', 'error');
+
+  setLoading(true);
+  try {
+    const res = await fetch('/api/logistic-regression', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({training_data: trainingData, query_point: queryPoint})
+    });
+    const data = await res.json();
+    setLoading(false);
+    if (!data.success) return showToast(data.error, 'error');
+
+    const r = data.result;
+    const rows = r.training_rows.map(row => `
+      <tr>
+        <td>[${row.features.join(', ')}]</td>
+        <td>${row.actual}</td>
+        <td>${row.predicted}</td>
+        <td>${row.probability}</td>
+      </tr>
+    `).join('');
+
+    const queryBlock = r.query_probability !== undefined ? `
+      <div class="result-badge ${r.query_predicted_label === 1 ? 'result-good' : 'result-bad'}">
+        <i class="fa-solid fa-check"></i> Query prediction: class ${r.query_predicted_label} (probability ${r.query_probability})
+      </div>
+    ` : '';
+
+    renderOutput(`
+      ${queryBlock}
+      <div class="result-grid" style="margin-bottom:16px;">
+        <div class="result-row"><span>Weights</span><strong>[${r.weights.join(', ')}]</strong></div>
+        <div class="result-row"><span>Bias</span><strong>${r.bias}</strong></div>
+        <div class="result-row"><span>Training accuracy</span><strong>${(r.training_accuracy * 100).toFixed(1)}%</strong></div>
+      </div>
+      <table class="data-table">
+        <thead><tr><th>Features</th><th>Actual</th><th>Predicted</th><th>Probability</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    `);
+    showToast('Program executed successfully.', 'success');
+  } catch (e) {
+    setLoading(false);
+    showToast('Something went wrong contacting the backend.', 'error');
+  }
+});
+
+document.getElementById('clearBtn').addEventListener('click', () => resetOutput());
+document.getElementById('resetBtn').addEventListener('click', () => {
+  document.getElementById('trainingData').value = '';
+  document.getElementById('queryPoint').value = '';
+  resetOutput();
+});
+</script>
+{% endblock %}
