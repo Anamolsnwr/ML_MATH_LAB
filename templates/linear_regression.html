@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+{% block title %}Linear Regression — ML Math Lab{% endblock %}
+
+{% block content %}
+<section class="program-page">
+  <div class="container">
+
+    <a href="{{ url_for('home') }}#programs" class="back-link"><i class="fa-solid fa-arrow-left"></i> All programs</a>
+
+    <div class="program-header" data-aos="fade-up">
+      <div class="program-icon-lg"><i class="fa-solid fa-chart-line"></i></div>
+      <div>
+        <h1>Linear Regression</h1>
+        <p>Fit a straight line to your (x, y) data using least squares, computed from scratch, then predict a new value.</p>
+      </div>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-lg-6" data-aos="fade-up">
+        <div class="panel glass">
+          <h5 class="panel-title"><i class="fa-solid fa-sliders"></i> Input</h5>
+
+          <div class="mb-3">
+            <label class="form-label" for="xValues">X values (space-separated)</label>
+            <input type="text" class="form-control mml-input" id="xValues" placeholder="e.g. 1 2 3 4 5">
+          </div>
+          <div class="mb-3">
+            <label class="form-label" for="yValues">Y values (space-separated)</label>
+            <input type="text" class="form-control mml-input" id="yValues" placeholder="e.g. 2 4 5 4 5">
+          </div>
+          <div class="mb-3">
+            <label class="form-label" for="predictX">Predict y for x = (optional)</label>
+            <input type="text" class="form-control mml-input" id="predictX" placeholder="e.g. 6">
+          </div>
+          <p class="hint"><i class="fa-solid fa-circle-info"></i> Enter at least 2 points; x and y must have the same count.</p>
+
+          <div class="btn-row">
+            <button class="btn btn-gradient" id="runBtn"><i class="fa-solid fa-play"></i> Run Program</button>
+            <button class="btn btn-outline-glass" id="clearBtn"><i class="fa-solid fa-eraser"></i> Clear</button>
+            <button class="btn btn-outline-glass" id="resetBtn"><i class="fa-solid fa-rotate-left"></i> Reset</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-6" data-aos="fade-up" data-aos-delay="100">
+        <div class="panel glass output-panel">
+          <h5 class="panel-title"><i class="fa-solid fa-terminal"></i> Output</h5>
+          <div id="outputBox" class="output-box">
+            <p class="output-placeholder">Run the program to see results here.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+function buildRegressionPlot(points) {
+  const W = 300, H = 200, pad = 24;
+  const xs = points.map(p => p.x), ys = points.map(p => p.y), ysPred = points.map(p => p.y_pred);
+  const xMin = Math.min(...xs), xMax = Math.max(...xs);
+  const yMin = Math.min(...ys, ...ysPred), yMax = Math.max(...ys, ...ysPred);
+  const sx = x => pad + (xMax === xMin ? (W - 2*pad)/2 : (x - xMin) / (xMax - xMin) * (W - 2*pad));
+  const sy = y => H - pad - (yMax === yMin ? (H - 2*pad)/2 : (y - yMin) / (yMax - yMin) * (H - 2*pad));
+
+  const sorted = [...points].sort((a,b) => a.x - b.x);
+  const linePoints = sorted.map(p => `${sx(p.x)},${sy(p.y_pred)}`).join(' ');
+  const dots = points.map(p => `<circle cx="${sx(p.x)}" cy="${sy(p.y)}" r="4" fill="var(--accent, #06B6D4)"></circle>`).join('');
+
+  return `<svg viewBox="0 0 ${W} ${H}" class="plot-svg">
+    <polyline points="${linePoints}" fill="none" stroke="#7C3AED" stroke-width="2"></polyline>
+    ${dots}
+  </svg>`;
+}
+
+document.getElementById('runBtn').addEventListener('click', async () => {
+  const xValues = document.getElementById('xValues').value.trim();
+  const yValues = document.getElementById('yValues').value.trim();
+  const predictX = document.getElementById('predictX').value.trim();
+  if (!xValues || !yValues) return showToast('Please enter both x and y values.', 'error');
+
+  setLoading(true);
+  try {
+    const res = await fetch('/api/linear-regression', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({x_values: xValues, y_values: yValues, predict_x: predictX})
+    });
+    const data = await res.json();
+    setLoading(false);
+    if (!data.success) return showToast(data.error, 'error');
+
+    const r = data.result;
+    const predictionRow = r.predicted_y !== undefined
+      ? `<div class="result-row"><span>Predicted y at x = ${r.predict_x}</span><strong>${r.predicted_y}</strong></div>`
+      : '';
+
+    renderOutput(`
+      ${buildRegressionPlot(r.points)}
+      <div class="result-grid" style="margin-top:16px;">
+        <div class="result-row"><span>Equation</span><strong>${r.equation}</strong></div>
+        <div class="result-row"><span>Slope</span><strong>${r.slope}</strong></div>
+        <div class="result-row"><span>Intercept</span><strong>${r.intercept}</strong></div>
+        <div class="result-row"><span>R&sup2; (fit quality)</span><strong>${r.r_squared}</strong></div>
+        ${predictionRow}
+      </div>
+    `);
+    showToast('Program executed successfully.', 'success');
+  } catch (e) {
+    setLoading(false);
+    showToast('Something went wrong contacting the backend.', 'error');
+  }
+});
+
+document.getElementById('clearBtn').addEventListener('click', () => resetOutput());
+document.getElementById('resetBtn').addEventListener('click', () => {
+  document.getElementById('xValues').value = '';
+  document.getElementById('yValues').value = '';
+  document.getElementById('predictX').value = '';
+  resetOutput();
+});
+</script>
+{% endblock %}
