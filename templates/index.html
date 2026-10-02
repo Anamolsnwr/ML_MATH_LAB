@@ -120,6 +120,74 @@
         <a href="{{ url_for('statistics_page') }}" class="btn btn-fusion w-100 mt-4">Run Analytics Node <i class="fa-solid fa-arrow-right fs-6"></i></a>
       </div>
     </div>
+
+    <!-- Node 6 -->
+    <div class="col-md-6 col-lg-4 program-card-col" data-title="Linear Regression">
+      <div class="fusion-node p-4 h-100 d-flex flex-column justify-content-between">
+        <div>
+          <div class="d-flex align-items-center justify-content-between mb-3">
+            <div class="p-3 rounded-4" style="background: rgba(14, 165, 233, 0.15); color: #38BDF8;">
+              <i class="fa-solid fa-arrow-trend-up fa-xl"></i>
+            </div>
+            <span class="fusion-badge" style="color: #38BDF8; border-color: rgba(14, 165, 233, 0.3);">ML REGRESSION</span>
+          </div>
+          <h4 class="fw-bold text-white mb-2" style="font-family: var(--font-display);">Linear Regression Engine</h4>
+          <p class="text-secondary small">Fit a least-squares line to feature-target pairs and predict unseen values, computed from scratch.</p>
+        </div>
+        <a href="{{ url_for('linear_regression_page') }}" class="btn btn-fusion w-100 mt-4">Run Regression Node <i class="fa-solid fa-arrow-right fs-6"></i></a>
+      </div>
+    </div>
+
+    <!-- Node 7 -->
+    <div class="col-md-6 col-lg-4 program-card-col" data-title="K-Means Clustering">
+      <div class="fusion-node p-4 h-100 d-flex flex-column justify-content-between">
+        <div>
+          <div class="d-flex align-items-center justify-content-between mb-3">
+            <div class="p-3 rounded-4" style="background: rgba(6, 182, 212, 0.15); color: #22D3EE;">
+              <i class="fa-solid fa-circle-nodes fa-xl"></i>
+            </div>
+            <span class="fusion-badge" style="color: #22D3EE; border-color: rgba(6, 182, 212, 0.3);">UNSUPERVISED ML</span>
+          </div>
+          <h4 class="fw-bold text-white mb-2" style="font-family: var(--font-display);">K-Means Clustering</h4>
+          <p class="text-secondary small">Partition unlabeled feature vectors into k clusters using Lloyd's iterative centroid algorithm.</p>
+        </div>
+        <a href="{{ url_for('kmeans_page') }}" class="btn btn-fusion w-100 mt-4">Run Clustering Node <i class="fa-solid fa-arrow-right fs-6"></i></a>
+      </div>
+    </div>
+
+    <!-- Node 8 -->
+    <div class="col-md-6 col-lg-4 program-card-col" data-title="K-Nearest Neighbors">
+      <div class="fusion-node p-4 h-100 d-flex flex-column justify-content-between">
+        <div>
+          <div class="d-flex align-items-center justify-content-between mb-3">
+            <div class="p-3 rounded-4" style="background: rgba(249, 115, 22, 0.15); color: #FB923C;">
+              <i class="fa-solid fa-share-nodes fa-xl"></i>
+            </div>
+            <span class="fusion-badge" style="color: #FB923C; border-color: rgba(249, 115, 22, 0.3);">ML CLASSIFICATION</span>
+          </div>
+          <h4 class="fw-bold text-white mb-2" style="font-family: var(--font-display);">K-Nearest Neighbors</h4>
+          <p class="text-secondary small">Classify a query vector by majority vote among its k closest labeled neighbors in feature space.</p>
+        </div>
+        <a href="{{ url_for('knn_page') }}" class="btn btn-fusion w-100 mt-4">Run KNN Node <i class="fa-solid fa-arrow-right fs-6"></i></a>
+      </div>
+    </div>
+
+    <!-- Node 9 -->
+    <div class="col-md-12 col-lg-4 program-card-col" data-title="Logistic Regression">
+      <div class="fusion-node p-4 h-100 d-flex flex-column justify-content-between">
+        <div>
+          <div class="d-flex align-items-center justify-content-between mb-3">
+            <div class="p-3 rounded-4" style="background: rgba(244, 63, 94, 0.15); color: #FB7185;">
+              <i class="fa-solid fa-wave-square fa-xl"></i>
+            </div>
+            <span class="fusion-badge" style="color: #FB7185; border-color: rgba(244, 63, 94, 0.3);">ML CLASSIFICATION</span>
+          </div>
+          <h4 class="fw-bold text-white mb-2" style="font-family: var(--font-display);">Logistic Regression</h4>
+          <p class="text-secondary small">Train a binary classifier via gradient descent on the sigmoid activation, computed from scratch.</p>
+        </div>
+        <a href="{{ url_for('logistic_regression_page') }}" class="btn btn-fusion w-100 mt-4">Run Logistic Node <i class="fa-solid fa-arrow-right fs-6"></i></a>
+      </div>
+    </div>
   </div>
 </section>
 {% endblock %}
