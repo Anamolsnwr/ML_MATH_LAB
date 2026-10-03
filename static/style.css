@@ -215,3 +215,11 @@ body::after {
 .data-table{width:100%;border-collapse:collapse;font-size:.85rem;}
 .data-table th, .data-table td{padding:8px 10px;border-bottom:1px solid var(--card-border);text-align:left;}
 .data-table th{color:var(--text-dim);font-weight:600;}
+
+.section-split-line {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+}
+.section-divider h3 {
+  letter-spacing: -0.5px;
+}
