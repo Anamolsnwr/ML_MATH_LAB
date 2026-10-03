@@ -1,49 +1,51 @@
-{% extends "base.html" %}
-{% block title %}K-Means Clustering — ML Math Lab{% endblock %}
+{% extends 'base.html' %}
 
 {% block content %}
-<section class="program-page">
-  <div class="container">
+<section class="py-4">
+  <a href="{{ url_for('home') }}#nodes" class="text-secondary text-decoration-none d-inline-block mb-4">
+    <i class="fa-solid fa-arrow-left me-1"></i> All nodes
+  </a>
 
-    <a href="{{ url_for('home') }}#nodes" class="back-link"><i class="fa-solid fa-arrow-left"></i> All programs</a>
+  <div class="d-flex align-items-center gap-3 mb-4">
+    <div class="p-3 rounded-4" style="background: rgba(6, 182, 212, 0.15); color: #22D3EE;">
+      <i class="fa-solid fa-circle-nodes fa-xl"></i>
+    </div>
+    <div>
+      <span class="fusion-badge" style="color: #22D3EE; border-color: rgba(6, 182, 212, 0.3);">UNSUPERVISED ML</span>
+      <h1 class="fw-bold text-white mb-0 mt-1" style="font-family: var(--font-display);">K-Means Clustering</h1>
+      <p class="text-secondary small mb-0">Group unlabeled 2D points into k clusters using Lloyd's algorithm.</p>
+    </div>
+  </div>
 
-    <div class="program-header" data-aos="fade-up">
-      <div class="program-icon-lg"><i class="fa-solid fa-circle-nodes"></i></div>
-      <div>
-        <h1>K-Means Clustering</h1>
-        <p>Partition 2D points into k clusters using Lloyd's iterative centroid algorithm, computed from scratch.</p>
+  <div class="row g-4">
+    <div class="col-lg-6">
+      <div class="fusion-node p-4 h-100">
+        <h5 class="fw-bold text-white mb-3"><i class="fa-solid fa-sliders me-2"></i>Input</h5>
+
+        <div class="mb-3">
+          <label class="text-secondary small mb-1 d-block">Number of clusters (k)</label>
+          <input type="number" min="1" max="8" class="form-control fusion-input" id="kValue" placeholder="e.g. 2">
+        </div>
+        <div class="mb-3">
+          <label class="text-secondary small mb-1 d-block">Points — one "x y" pair per line</label>
+          <textarea class="form-control fusion-input" id="pointsInput" rows="7" placeholder="1 1&#10;1.5 2&#10;3 4&#10;5 7&#10;3.5 5&#10;4.5 5&#10;3.5 4.5"></textarea>
+        </div>
+        <p class="text-secondary small"><i class="fa-solid fa-circle-info me-1"></i>Need at least k points.</p>
+
+        <div class="d-flex flex-wrap gap-2 mt-3">
+          <button class="btn btn-fusion" id="runBtn"><i class="fa-solid fa-play me-1"></i>Run Program</button>
+          <button class="btn demo-btn" id="demoBtn"><i class="fa-solid fa-wand-magic-sparkles me-1"></i>Try Demo</button>
+          <button class="btn btn-fusion-secondary" id="clearBtn"><i class="fa-solid fa-eraser me-1"></i>Clear</button>
+          <button class="btn btn-fusion-secondary" id="resetBtn"><i class="fa-solid fa-rotate-left me-1"></i>Reset</button>
+        </div>
       </div>
     </div>
 
-    <div class="row g-4">
-      <div class="col-lg-6" data-aos="fade-up">
-        <div class="panel glass">
-          <h5 class="panel-title"><i class="fa-solid fa-sliders"></i> Input</h5>
-
-          <div class="mb-3">
-            <label class="form-label" for="pointsInput">2D Points (x y, one point per line)</label>
-            <textarea class="form-control mml-input" id="pointsInput" rows="8" placeholder="1 2&#10;1.5 1.8&#10;5 8&#10;8 8&#10;1 0.6&#10;9 11&#10;8 2&#10;10 2&#10;9 3"></textarea>
-          </div>
-          <div class="mb-3">
-            <label class="form-label" for="kInput">Number of clusters (k)</label>
-            <input type="number" min="1" max="10" class="form-control mml-input" id="kInput" value="3" placeholder="e.g. 3">
-          </div>
-          <p class="hint"><i class="fa-solid fa-circle-info"></i> Each row must contain exactly two numbers (x and y).</p>
-
-          <div class="btn-row">
-            <button class="btn btn-gradient" id="runBtn"><i class="fa-solid fa-play"></i> Run Program</button>
-            <button class="btn btn-outline-glass" id="clearBtn"><i class="fa-solid fa-eraser"></i> Clear</button>
-            <button class="btn btn-outline-glass" id="resetBtn"><i class="fa-solid fa-rotate-left"></i> Reset</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-lg-6" data-aos="fade-up" data-aos-delay="100">
-        <div class="panel glass output-panel">
-          <h5 class="panel-title"><i class="fa-solid fa-terminal"></i> Output</h5>
-          <div id="outputBox" class="output-box">
-            <p class="output-placeholder">Run the program to see results here.</p>
-          </div>
+    <div class="col-lg-6">
+      <div class="fusion-node p-4 h-100">
+        <h5 class="fw-bold text-white mb-3"><i class="fa-solid fa-terminal me-2"></i>Output</h5>
+        <div id="outputBox" class="output-box">
+          <p class="text-secondary mb-0">Run the program or try the demo to see results here.</p>
         </div>
       </div>
     </div>
@@ -51,98 +53,101 @@
 </section>
 {% endblock %}
 
-{% block scripts %}
+{% block extra_scripts %}
 <script>
-const CLUSTER_COLORS = ['#38BDF8', '#F472B6', '#34D399', '#FBBF24', '#A78BFA', '#FB923C', '#F87171', '#4ADE80'];
+const CLUSTER_COLORS = ['#22D3EE', '#A855F7', '#FBBF24', '#FB7185', '#34D399', '#F472B6', '#38BDF8', '#A3E635'];
 
-function buildKMeansPlot(clusters, points) {
-  const W = 320, H = 220, pad = 30;
-  const allX = points.map(p => p[0]);
-  const allY = points.map(p => p[1]);
-  clusters.forEach(c => {
-    allX.push(c.centroid[0]);
-    allY.push(c.centroid[1]);
-  });
-  const xMin = Math.min(...allX), xMax = Math.max(...allX);
-  const yMin = Math.min(...allY), yMax = Math.max(...allY);
-  const sx = x => pad + (xMax === xMin ? (W - 2 * pad) / 2 : ((x - xMin) / (xMax - xMin)) * (W - 2 * pad));
-  const sy = y => H - pad - (yMax === yMin ? (H - 2 * pad) / 2 : ((y - yMin) / (yMax - yMin)) * (H - 2 * pad));
-
-  let dotsSvg = '';
-  clusters.forEach((c, idx) => {
-    const color = CLUSTER_COLORS[idx % CLUSTER_COLORS.length];
-    c.points.forEach(p => {
-      dotsSvg += `<circle cx="${sx(p[0])}" cy="${sy(p[1])}" r="4" fill="${color}" opacity="0.85"></circle>`;
-    });
-    // Centroid marker (cross or diamond)
-    const cx = sx(c.centroid[0]), cy = sy(c.centroid[1]);
-    dotsSvg += `
-      <polygon points="${cx},${cy-7} ${cx+7},${cy} ${cx},${cy+7} ${cx-7},${cy}" fill="${color}" stroke="#FFFFFF" stroke-width="1.5"></polygon>
-    `;
-  });
-
-  return `<svg viewBox="0 0 ${W} ${H}" class="plot-svg">
-    ${dotsSvg}
-  </svg>`;
+function showToast(message, type) {
+  const toast = document.createElement('div');
+  toast.textContent = message;
+  toast.style.cssText = `position:fixed;bottom:20px;right:20px;z-index:2000;padding:12px 20px;
+    border-radius:10px;color:#fff;font-size:.9rem;font-weight:500;
+    background:${type === 'error' ? '#DC2626' : '#059669'};box-shadow:0 10px 30px rgba(0,0,0,.4);`;
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 3000);
 }
 
-document.getElementById('runBtn').addEventListener('click', async () => {
-  const points = document.getElementById('pointsInput').value.trim();
-  const k = document.getElementById('kInput').value.trim();
-  if (!points || !k) return showToast('Please enter both points and k.', 'error');
+function buildClusterPlot(points, assignments, clusters) {
+  const W = 300, H = 220, pad = 24;
+  const xs = points.map(p => p[0]), ys = points.map(p => p[1]);
+  const xMin = Math.min(...xs), xMax = Math.max(...xs);
+  const yMin = Math.min(...ys), yMax = Math.max(...ys);
+  const sx = x => pad + (xMax === xMin ? (W - 2*pad)/2 : (x - xMin) / (xMax - xMin) * (W - 2*pad));
+  const sy = y => H - pad - (yMax === yMin ? (H - 2*pad)/2 : (y - yMin) / (yMax - yMin) * (H - 2*pad));
 
-  setLoading(true);
+  const dots = points.map((p, i) => {
+    const color = CLUSTER_COLORS[assignments[i] % CLUSTER_COLORS.length];
+    return `<circle cx="${sx(p[0])}" cy="${sy(p[1])}" r="4" fill="${color}"></circle>`;
+  }).join('');
+
+  const centroidMarks = clusters.map(c => {
+    const color = CLUSTER_COLORS[c.cluster_id % CLUSTER_COLORS.length];
+    const cx = sx(c.centroid[0]), cy = sy(c.centroid[1]);
+    return `<g><line x1="${cx-7}" y1="${cy}" x2="${cx+7}" y2="${cy}" stroke="${color}" stroke-width="2"/><line x1="${cx}" y1="${cy-7}" x2="${cx}" y2="${cy+7}" stroke="${color}" stroke-width="2"/></g>`;
+  }).join('');
+
+  return `<svg viewBox="0 0 ${W} ${H}" style="width:100%;border-radius:12px;background:rgba(255,255,255,.03);">${dots}${centroidMarks}</svg>`;
+}
+
+function row(label, value) {
+  return `<div class="d-flex justify-content-between border-bottom border-secondary border-opacity-25 py-2">
+    <span class="text-secondary small">${label}</span><strong class="small" style="color:#38BDF8;">${value}</strong></div>`;
+}
+
+async function runKMeans() {
+  const k = document.getElementById('kValue').value;
+  const points = document.getElementById('pointsInput').value.trim();
+  if (!k || !points) return showToast('Please enter k and at least one point.', 'error');
+
+  const box = document.getElementById('outputBox');
+  box.innerHTML = '<p class="text-secondary mb-0">Running…</p>';
+
   try {
     const res = await fetch('/api/kmeans', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({points: points, k: k})
+      body: JSON.stringify({k, points})
     });
     const data = await res.json();
-    setLoading(false);
-    if (!data.success) return showToast(data.error, 'error');
+    if (!data.success) { box.innerHTML = `<p class="text-danger mb-0">${data.error}</p>`; return showToast(data.error, 'error'); }
 
     const r = data.result;
-    const clusterChips = r.clusters.map((c, idx) => {
-      const col = CLUSTER_COLORS[idx % CLUSTER_COLORS.length];
-      return `<span class="cluster-chip" style="border: 1px solid ${col};"><span class="dot" style="background:${col};"></span> Cluster ${c.cluster_id}: ${c.size} pts</span>`;
-    }).join(' ');
-
-    const rows = r.clusters.map((c, idx) => {
-      const col = CLUSTER_COLORS[idx % CLUSTER_COLORS.length];
-      return `
-        <tr>
-          <td><span class="dot" style="background:${col};"></span> Cluster ${c.cluster_id}</td>
-          <td>[${c.centroid.join(', ')}]</td>
-          <td>${c.size}</td>
-        </tr>
-      `;
+    const chips = r.clusters.map(c => {
+      const color = CLUSTER_COLORS[c.cluster_id % CLUSTER_COLORS.length];
+      return `<span class="d-inline-flex align-items-center gap-1 px-2 py-1 rounded-pill me-1 mb-1" style="background:rgba(255,255,255,.06);font-size:.8rem;">
+        <span style="width:8px;height:8px;border-radius:50%;background:${color};display:inline-block;"></span>
+        Cluster ${c.cluster_id} · ${c.size} pts</span>`;
     }).join('');
 
-    renderOutput(`
-      ${buildKMeansPlot(r.clusters, r.points)}
-      <div style="margin: 12px 0;">${clusterChips}</div>
-      <div class="result-grid" style="margin-bottom:14px;">
-        <div class="result-row"><span>Clusters (k)</span><strong>${r.k}</strong></div>
-        <div class="result-row"><span>Iterations to Converge</span><strong>${r.iterations}</strong></div>
-      </div>
-      <table class="data-table">
-        <thead><tr><th>Cluster</th><th>Centroid [x, y]</th><th>Size</th></tr></thead>
-        <tbody>${rows}</tbody>
-      </table>
-    `);
-    showToast('K-Means executed successfully.', 'success');
+    box.innerHTML = `
+      ${buildClusterPlot(r.points, r.assignments, r.clusters)}
+      <div class="my-3">${chips}</div>
+      <div>
+        ${row('Converged in', r.iterations + ' iteration(s)')}
+        ${r.clusters.map(c => row('Centroid ' + c.cluster_id, '[' + c.centroid.join(', ') + ']')).join('')}
+      </div>`;
+    showToast('Program executed successfully.', 'success');
   } catch (e) {
-    setLoading(false);
+    box.innerHTML = '<p class="text-danger mb-0">Something went wrong contacting the backend.</p>';
     showToast('Something went wrong contacting the backend.', 'error');
   }
+}
+
+document.getElementById('runBtn').addEventListener('click', runKMeans);
+
+document.getElementById('demoBtn').addEventListener('click', () => {
+  document.getElementById('kValue').value = '2';
+  document.getElementById('pointsInput').value = '1 1\n1.5 2\n3 4\n5 7\n3.5 5\n4.5 5\n3.5 4.5';
+  runKMeans();
 });
 
-document.getElementById('clearBtn').addEventListener('click', () => resetOutput());
+document.getElementById('clearBtn').addEventListener('click', () => {
+  document.getElementById('outputBox').innerHTML = '<p class="text-secondary mb-0">Run the program or try the demo to see results here.</p>';
+});
 document.getElementById('resetBtn').addEventListener('click', () => {
+  document.getElementById('kValue').value = '';
   document.getElementById('pointsInput').value = '';
-  document.getElementById('kInput').value = '3';
-  resetOutput();
+  document.getElementById('outputBox').innerHTML = '<p class="text-secondary mb-0">Run the program or try the demo to see results here.</p>';
 });
 </script>
 {% endblock %}
