@@ -94,7 +94,6 @@
     }
 
     /* Gradient Hero Text */
-    /* Gradient Hero Text */
     .gradient-text {
       background: var(--gradient-ml);
       background-clip: text;
@@ -145,7 +144,7 @@
     }
 
     /* Inputs & Form Controls */
-    .fusion-input, input.form-control {
+    .fusion-input, input.form-control, textarea.form-control {
       background: rgba(3, 7, 18, 0.8) !important;
       border: 1px solid rgba(255, 255, 255, 0.12) !important;
       color: #FFFFFF !important;
@@ -155,7 +154,7 @@
       transition: all 0.25s ease;
     }
 
-    .fusion-input:focus, input.form-control:focus {
+    .fusion-input:focus, input.form-control:focus, textarea.form-control:focus {
       border-color: #A855F7 !important;
       box-shadow: 0 0 0 4px rgba(168, 85, 247, 0.25) !important;
     }
@@ -170,7 +169,12 @@
       font-family: var(--font-mono);
       color: #38BDF8;
       box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.5);
+      overflow-x: auto;
     }
+
+    .output-box table { color: #38BDF8; width: 100%; font-size: .85rem; }
+    .output-box th, .output-box td { padding: 6px 10px; border-bottom: 1px solid rgba(255,255,255,.08); text-align: left; }
+    .output-box th { color: var(--text-muted); font-weight: 600; }
 
     /* Navbar */
     .navbar-fusion {
@@ -180,6 +184,21 @@
       position: sticky;
       top: 0;
       z-index: 1000;
+    }
+
+    .demo-btn {
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px dashed rgba(56, 189, 248, 0.4);
+      color: #38BDF8 !important;
+      border-radius: 14px;
+      font-weight: 600;
+      padding: 0.9rem 1.8rem;
+      transition: all 0.25s ease;
+    }
+    .demo-btn:hover {
+      background: rgba(56, 189, 248, 0.2);
+      border-color: #38BDF8;
+      transform: translateY(-2px);
     }
   </style>
 </head>
@@ -215,17 +234,18 @@
 
   <footer class="text-center py-5 text-secondary border-top border-secondary border-opacity-10 mt-5 small">
     <div class="container">
+      <ul class="list-unstyled d-flex flex-wrap justify-content-center gap-3 mb-3">
+        <li><a href="{{ url_for('linear_regression_page') }}" class="text-secondary text-decoration-none">Linear Regression</a></li>
+        <li><a href="{{ url_for('kmeans_page') }}" class="text-secondary text-decoration-none">K-Means Clustering</a></li>
+        <li><a href="{{ url_for('knn_page') }}" class="text-secondary text-decoration-none">K-Nearest Neighbors</a></li>
+        <li><a href="{{ url_for('logistic_regression_page') }}" class="text-secondary text-decoration-none">Logistic Regression</a></li>
+      </ul>
       <p class="mb-0" style="font-family: var(--font-mono);">&copy; 2026 Machine Learning × Mathematics Computational Engine</p>
     </div>
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script src="{{ url_for('static', filename='js/script.js') }}"></script>
-  {% block scripts %}{% endblock %}
-
-  <li><a href="{{ url_for('linear_regression_page') }}">Linear Regression</a></li>
-<li><a href="{{ url_for('kmeans_page') }}">K-Means Clustering</a></li>
-<li><a href="{{ url_for('knn_page') }}">K-Nearest Neighbors</a></li>
-<li><a href="{{ url_for('logistic_regression_page') }}">Logistic Regression</a></li>
+  {% block extra_scripts %}{% endblock %}
 </body>
 </html>
