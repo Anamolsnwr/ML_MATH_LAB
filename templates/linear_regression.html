@@ -1,53 +1,55 @@
-{% extends "base.html" %}
-{% block title %}Linear Regression — ML Math Lab{% endblock %}
+{% extends 'base.html' %}
 
 {% block content %}
-<section class="program-page">
-  <div class="container">
+<section class="py-4">
+  <a href="{{ url_for('home') }}#nodes" class="text-secondary text-decoration-none d-inline-block mb-4">
+    <i class="fa-solid fa-arrow-left me-1"></i> All nodes
+  </a>
 
-    <a href="{{ url_for('home') }}#programs" class="back-link"><i class="fa-solid fa-arrow-left"></i> All programs</a>
+  <div class="d-flex align-items-center gap-3 mb-4">
+    <div class="p-3 rounded-4" style="background: rgba(14, 165, 233, 0.15); color: #38BDF8;">
+      <i class="fa-solid fa-arrow-trend-up fa-xl"></i>
+    </div>
+    <div>
+      <span class="fusion-badge" style="color: #38BDF8; border-color: rgba(14, 165, 233, 0.3);">ML REGRESSION</span>
+      <h1 class="fw-bold text-white mb-0 mt-1" style="font-family: var(--font-display);">Linear Regression Engine</h1>
+      <p class="text-secondary small mb-0">Fit a least-squares line to your data and predict new values.</p>
+    </div>
+  </div>
 
-    <div class="program-header" data-aos="fade-up">
-      <div class="program-icon-lg"><i class="fa-solid fa-chart-line"></i></div>
-      <div>
-        <h1>Linear Regression</h1>
-        <p>Fit a straight line to your (x, y) data using least squares, computed from scratch, then predict a new value.</p>
+  <div class="row g-4">
+    <div class="col-lg-6">
+      <div class="fusion-node p-4 h-100">
+        <h5 class="fw-bold text-white mb-3"><i class="fa-solid fa-sliders me-2"></i>Input</h5>
+
+        <div class="mb-3">
+          <label class="text-secondary small mb-1 d-block">X values (space-separated)</label>
+          <input type="text" class="form-control fusion-input" id="xValues" placeholder="e.g. 1 2 3 4 5">
+        </div>
+        <div class="mb-3">
+          <label class="text-secondary small mb-1 d-block">Y values (space-separated)</label>
+          <input type="text" class="form-control fusion-input" id="yValues" placeholder="e.g. 2 4 5 4 5">
+        </div>
+        <div class="mb-3">
+          <label class="text-secondary small mb-1 d-block">Predict y for x = (optional)</label>
+          <input type="text" class="form-control fusion-input" id="predictX" placeholder="e.g. 6">
+        </div>
+        <p class="text-secondary small"><i class="fa-solid fa-circle-info me-1"></i>Enter at least 2 points; x and y must have the same count.</p>
+
+        <div class="d-flex flex-wrap gap-2 mt-3">
+          <button class="btn btn-fusion" id="runBtn"><i class="fa-solid fa-play me-1"></i>Run Program</button>
+          <button class="btn demo-btn" id="demoBtn"><i class="fa-solid fa-wand-magic-sparkles me-1"></i>Try Demo</button>
+          <button class="btn btn-fusion-secondary" id="clearBtn"><i class="fa-solid fa-eraser me-1"></i>Clear</button>
+          <button class="btn btn-fusion-secondary" id="resetBtn"><i class="fa-solid fa-rotate-left me-1"></i>Reset</button>
+        </div>
       </div>
     </div>
 
-    <div class="row g-4">
-      <div class="col-lg-6" data-aos="fade-up">
-        <div class="panel glass">
-          <h5 class="panel-title"><i class="fa-solid fa-sliders"></i> Input</h5>
-
-          <div class="mb-3">
-            <label class="form-label" for="xValues">X values (space-separated)</label>
-            <input type="text" class="form-control mml-input" id="xValues" placeholder="e.g. 1 2 3 4 5">
-          </div>
-          <div class="mb-3">
-            <label class="form-label" for="yValues">Y values (space-separated)</label>
-            <input type="text" class="form-control mml-input" id="yValues" placeholder="e.g. 2 4 5 4 5">
-          </div>
-          <div class="mb-3">
-            <label class="form-label" for="predictX">Predict y for x = (optional)</label>
-            <input type="text" class="form-control mml-input" id="predictX" placeholder="e.g. 6">
-          </div>
-          <p class="hint"><i class="fa-solid fa-circle-info"></i> Enter at least 2 points; x and y must have the same count.</p>
-
-          <div class="btn-row">
-            <button class="btn btn-gradient" id="runBtn"><i class="fa-solid fa-play"></i> Run Program</button>
-            <button class="btn btn-outline-glass" id="clearBtn"><i class="fa-solid fa-eraser"></i> Clear</button>
-            <button class="btn btn-outline-glass" id="resetBtn"><i class="fa-solid fa-rotate-left"></i> Reset</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-lg-6" data-aos="fade-up" data-aos-delay="100">
-        <div class="panel glass output-panel">
-          <h5 class="panel-title"><i class="fa-solid fa-terminal"></i> Output</h5>
-          <div id="outputBox" class="output-box">
-            <p class="output-placeholder">Run the program to see results here.</p>
-          </div>
+    <div class="col-lg-6">
+      <div class="fusion-node p-4 h-100">
+        <h5 class="fw-bold text-white mb-3"><i class="fa-solid fa-terminal me-2"></i>Output</h5>
+        <div id="outputBox" class="output-box">
+          <p class="text-secondary mb-0">Run the program or try the demo to see results here.</p>
         </div>
       </div>
     </div>
@@ -57,6 +59,16 @@
 
 {% block extra_scripts %}
 <script>
+function showToast(message, type) {
+  const toast = document.createElement('div');
+  toast.textContent = message;
+  toast.style.cssText = `position:fixed;bottom:20px;right:20px;z-index:2000;padding:12px 20px;
+    border-radius:10px;color:#fff;font-size:.9rem;font-weight:500;
+    background:${type === 'error' ? '#DC2626' : '#059669'};box-shadow:0 10px 30px rgba(0,0,0,.4);`;
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 3000);
+}
+
 function buildRegressionPlot(points) {
   const W = 300, H = 200, pad = 24;
   const xs = points.map(p => p.x), ys = points.map(p => p.y), ysPred = points.map(p => p.y_pred);
@@ -64,24 +76,27 @@ function buildRegressionPlot(points) {
   const yMin = Math.min(...ys, ...ysPred), yMax = Math.max(...ys, ...ysPred);
   const sx = x => pad + (xMax === xMin ? (W - 2*pad)/2 : (x - xMin) / (xMax - xMin) * (W - 2*pad));
   const sy = y => H - pad - (yMax === yMin ? (H - 2*pad)/2 : (y - yMin) / (yMax - yMin) * (H - 2*pad));
-
   const sorted = [...points].sort((a,b) => a.x - b.x);
   const linePoints = sorted.map(p => `${sx(p.x)},${sy(p.y_pred)}`).join(' ');
-  const dots = points.map(p => `<circle cx="${sx(p.x)}" cy="${sy(p.y)}" r="4" fill="var(--accent, #06B6D4)"></circle>`).join('');
-
-  return `<svg viewBox="0 0 ${W} ${H}" class="plot-svg">
-    <polyline points="${linePoints}" fill="none" stroke="#7C3AED" stroke-width="2"></polyline>
-    ${dots}
-  </svg>`;
+  const dots = points.map(p => `<circle cx="${sx(p.x)}" cy="${sy(p.y)}" r="4" fill="#38BDF8"></circle>`).join('');
+  return `<svg viewBox="0 0 ${W} ${H}" style="width:100%;border-radius:12px;background:rgba(255,255,255,.03);">
+    <polyline points="${linePoints}" fill="none" stroke="#A855F7" stroke-width="2"></polyline>${dots}</svg>`;
 }
 
-document.getElementById('runBtn').addEventListener('click', async () => {
+function row(label, value) {
+  return `<div class="d-flex justify-content-between border-bottom border-secondary border-opacity-25 py-2">
+    <span class="text-secondary small">${label}</span><strong class="small" style="color:#38BDF8;">${value}</strong></div>`;
+}
+
+async function runLinearRegression() {
   const xValues = document.getElementById('xValues').value.trim();
   const yValues = document.getElementById('yValues').value.trim();
   const predictX = document.getElementById('predictX').value.trim();
   if (!xValues || !yValues) return showToast('Please enter both x and y values.', 'error');
 
-  setLoading(true);
+  const box = document.getElementById('outputBox');
+  box.innerHTML = '<p class="text-secondary mb-0">Running…</p>';
+
   try {
     const res = await fetch('/api/linear-regression', {
       method: 'POST',
@@ -89,37 +104,44 @@ document.getElementById('runBtn').addEventListener('click', async () => {
       body: JSON.stringify({x_values: xValues, y_values: yValues, predict_x: predictX})
     });
     const data = await res.json();
-    setLoading(false);
-    if (!data.success) return showToast(data.error, 'error');
+    if (!data.success) { box.innerHTML = `<p class="text-danger mb-0">${data.error}</p>`; return showToast(data.error, 'error'); }
 
     const r = data.result;
-    const predictionRow = r.predicted_y !== undefined
-      ? `<div class="result-row"><span>Predicted y at x = ${r.predict_x}</span><strong>${r.predicted_y}</strong></div>`
-      : '';
+    const predictionRow = r.predicted_y !== undefined ? row(`Predicted y at x = ${r.predict_x}`, r.predicted_y) : '';
 
-    renderOutput(`
+    box.innerHTML = `
       ${buildRegressionPlot(r.points)}
-      <div class="result-grid" style="margin-top:16px;">
-        <div class="result-row"><span>Equation</span><strong>${r.equation}</strong></div>
-        <div class="result-row"><span>Slope</span><strong>${r.slope}</strong></div>
-        <div class="result-row"><span>Intercept</span><strong>${r.intercept}</strong></div>
-        <div class="result-row"><span>R&sup2; (fit quality)</span><strong>${r.r_squared}</strong></div>
+      <div class="mt-3">
+        ${row('Equation', r.equation)}
+        ${row('Slope', r.slope)}
+        ${row('Intercept', r.intercept)}
+        ${row('R&sup2; (fit quality)', r.r_squared)}
         ${predictionRow}
-      </div>
-    `);
+      </div>`;
     showToast('Program executed successfully.', 'success');
   } catch (e) {
-    setLoading(false);
+    box.innerHTML = '<p class="text-danger mb-0">Something went wrong contacting the backend.</p>';
     showToast('Something went wrong contacting the backend.', 'error');
   }
+}
+
+document.getElementById('runBtn').addEventListener('click', runLinearRegression);
+
+document.getElementById('demoBtn').addEventListener('click', () => {
+  document.getElementById('xValues').value = '1 2 3 4 5';
+  document.getElementById('yValues').value = '2 4 5 4 5';
+  document.getElementById('predictX').value = '6';
+  runLinearRegression();
 });
 
-document.getElementById('clearBtn').addEventListener('click', () => resetOutput());
+document.getElementById('clearBtn').addEventListener('click', () => {
+  document.getElementById('outputBox').innerHTML = '<p class="text-secondary mb-0">Run the program or try the demo to see results here.</p>';
+});
 document.getElementById('resetBtn').addEventListener('click', () => {
   document.getElementById('xValues').value = '';
   document.getElementById('yValues').value = '';
   document.getElementById('predictX').value = '';
-  resetOutput();
+  document.getElementById('outputBox').innerHTML = '<p class="text-secondary mb-0">Run the program or try the demo to see results here.</p>';
 });
 </script>
 {% endblock %}
