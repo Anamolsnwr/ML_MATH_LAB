@@ -25,9 +25,9 @@
   </div>
 </section>
 
-<!-- Interactive Math & ML Nodes -->
+<!-- Search bar (filters both sections below) -->
 <section id="nodes" class="py-3">
-  <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
+  <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-5 gap-3">
     <div>
       <h3 class="fw-bold text-white mb-1" style="font-family: var(--font-display);">Computational Nodes</h3>
       <p class="text-secondary small mb-0">Select an ML & Mathematics pipeline module to execute calculations</p>
@@ -35,7 +35,16 @@
     <input type="text" id="program-search" class="form-control fusion-input w-auto" placeholder="Search ML & Math modules..." style="min-width: 280px;">
   </div>
 
-  <div class="row g-4">
+  <!-- ============ SECTION: MATH FOUNDATIONS ============ -->
+  <div class="section-divider mb-4">
+    <span class="fusion-badge" style="color: #22D3EE; border-color: rgba(6, 182, 212, 0.3);">
+      <i class="fa-solid fa-square-root-variable me-1"></i> MATH FOUNDATIONS
+    </span>
+    <h3 class="fw-bold text-white mt-2 mb-1" style="font-family: var(--font-display);">Core Mathematics Modules</h3>
+    <p class="text-secondary small mb-0">The building blocks every ML algorithm relies on — matrices, vectors, probability and statistics.</p>
+  </div>
+
+  <div class="row g-4 mb-5">
     <!-- Node 1 -->
     <div class="col-md-6 col-lg-4 program-card-col" data-title="Identity Matrix">
       <div class="fusion-node p-4 h-100 d-flex flex-column justify-content-between">
@@ -120,7 +129,21 @@
         <a href="{{ url_for('statistics_page') }}" class="btn btn-fusion w-100 mt-4">Run Analytics Node <i class="fa-solid fa-arrow-right fs-6"></i></a>
       </div>
     </div>
+  </div>
 
+  <!-- ============ DIVIDER ============ -->
+  <div class="section-split-line my-5"></div>
+
+  <!-- ============ SECTION: ML ALGORITHMS ============ -->
+  <div class="section-divider mb-4">
+    <span class="fusion-badge" style="color: #C084FC; border-color: rgba(168, 85, 247, 0.3);">
+      <i class="fa-solid fa-robot me-1"></i> ML ALGORITHMS
+    </span>
+    <h3 class="fw-bold text-white mt-2 mb-1" style="font-family: var(--font-display);">Trainable Machine Learning Models</h3>
+    <p class="text-secondary small mb-0">Real algorithms that learn from data — regression, clustering, and classification, built from scratch.</p>
+  </div>
+
+  <div class="row g-4">
     <!-- Node 6 -->
     <div class="col-md-6 col-lg-4 program-card-col" data-title="Linear Regression">
       <div class="fusion-node p-4 h-100 d-flex flex-column justify-content-between">
