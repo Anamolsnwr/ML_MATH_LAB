@@ -1,53 +1,55 @@
-{% extends "base.html" %}
-{% block title %}K-Nearest Neighbors — ML Math Lab{% endblock %}
+{% extends 'base.html' %}
 
 {% block content %}
-<section class="program-page">
-  <div class="container">
+<section class="py-4">
+  <a href="{{ url_for('home') }}#nodes" class="text-secondary text-decoration-none d-inline-block mb-4">
+    <i class="fa-solid fa-arrow-left me-1"></i> All nodes
+  </a>
 
-    <a href="{{ url_for('home') }}#programs" class="back-link"><i class="fa-solid fa-arrow-left"></i> All programs</a>
+  <div class="d-flex align-items-center gap-3 mb-4">
+    <div class="p-3 rounded-4" style="background: rgba(249, 115, 22, 0.15); color: #FB923C;">
+      <i class="fa-solid fa-share-nodes fa-xl"></i>
+    </div>
+    <div>
+      <span class="fusion-badge" style="color: #FB923C; border-color: rgba(249, 115, 22, 0.3);">ML CLASSIFICATION</span>
+      <h1 class="fw-bold text-white mb-0 mt-1" style="font-family: var(--font-display);">K-Nearest Neighbors</h1>
+      <p class="text-secondary small mb-0">Classify a point by majority vote among its k closest labeled neighbors.</p>
+    </div>
+  </div>
 
-    <div class="program-header" data-aos="fade-up">
-      <div class="program-icon-lg"><i class="fa-solid fa-share-nodes"></i></div>
-      <div>
-        <h1>K-Nearest Neighbors</h1>
-        <p>Classify a new point by majority vote among its k closest labeled training points, computed from scratch.</p>
+  <div class="row g-4">
+    <div class="col-lg-6">
+      <div class="fusion-node p-4 h-100">
+        <h5 class="fw-bold text-white mb-3"><i class="fa-solid fa-sliders me-2"></i>Input</h5>
+
+        <div class="mb-3">
+          <label class="text-secondary small mb-1 d-block">Training data — features then label, one row per line</label>
+          <textarea class="form-control fusion-input" id="trainingData" rows="7" placeholder="1 2 A&#10;2 1 A&#10;2 3 A&#10;8 8 B&#10;9 8 B&#10;8 9 B"></textarea>
+        </div>
+        <div class="mb-3">
+          <label class="text-secondary small mb-1 d-block">Query point (space-separated features)</label>
+          <input type="text" class="form-control fusion-input" id="queryPoint" placeholder="e.g. 2 2">
+        </div>
+        <div class="mb-3">
+          <label class="text-secondary small mb-1 d-block">k (number of neighbors)</label>
+          <input type="number" min="1" max="15" class="form-control fusion-input" id="kValue" placeholder="e.g. 3">
+        </div>
+        <p class="text-secondary small"><i class="fa-solid fa-circle-info me-1"></i>Every row and the query point need the same number of features.</p>
+
+        <div class="d-flex flex-wrap gap-2 mt-3">
+          <button class="btn btn-fusion" id="runBtn"><i class="fa-solid fa-play me-1"></i>Run Program</button>
+          <button class="btn demo-btn" id="demoBtn"><i class="fa-solid fa-wand-magic-sparkles me-1"></i>Try Demo</button>
+          <button class="btn btn-fusion-secondary" id="clearBtn"><i class="fa-solid fa-eraser me-1"></i>Clear</button>
+          <button class="btn btn-fusion-secondary" id="resetBtn"><i class="fa-solid fa-rotate-left me-1"></i>Reset</button>
+        </div>
       </div>
     </div>
 
-    <div class="row g-4">
-      <div class="col-lg-6" data-aos="fade-up">
-        <div class="panel glass">
-          <h5 class="panel-title"><i class="fa-solid fa-sliders"></i> Input</h5>
-
-          <div class="mb-3">
-            <label class="form-label" for="trainingData">Training data — features then label, one row per line</label>
-            <textarea class="form-control mml-input" id="trainingData" rows="8" placeholder="1 2 A&#10;2 1 A&#10;2 3 A&#10;8 8 B&#10;9 8 B&#10;8 9 B"></textarea>
-          </div>
-          <div class="mb-3">
-            <label class="form-label" for="queryPoint">Query point (space-separated features)</label>
-            <input type="text" class="form-control mml-input" id="queryPoint" placeholder="e.g. 2 2">
-          </div>
-          <div class="mb-3">
-            <label class="form-label" for="kValue">k (number of neighbors)</label>
-            <input type="number" min="1" max="15" class="form-control mml-input" id="kValue" placeholder="e.g. 3">
-          </div>
-          <p class="hint"><i class="fa-solid fa-circle-info"></i> Every training row and the query point need the same number of feature values.</p>
-
-          <div class="btn-row">
-            <button class="btn btn-gradient" id="runBtn"><i class="fa-solid fa-play"></i> Run Program</button>
-            <button class="btn btn-outline-glass" id="clearBtn"><i class="fa-solid fa-eraser"></i> Clear</button>
-            <button class="btn btn-outline-glass" id="resetBtn"><i class="fa-solid fa-rotate-left"></i> Reset</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-lg-6" data-aos="fade-up" data-aos-delay="100">
-        <div class="panel glass output-panel">
-          <h5 class="panel-title"><i class="fa-solid fa-terminal"></i> Output</h5>
-          <div id="outputBox" class="output-box">
-            <p class="output-placeholder">Run the program to see results here.</p>
-          </div>
+    <div class="col-lg-6">
+      <div class="fusion-node p-4 h-100">
+        <h5 class="fw-bold text-white mb-3"><i class="fa-solid fa-terminal me-2"></i>Output</h5>
+        <div id="outputBox" class="output-box">
+          <p class="text-secondary mb-0">Run the program or try the demo to see results here.</p>
         </div>
       </div>
     </div>
@@ -57,13 +59,25 @@
 
 {% block extra_scripts %}
 <script>
-document.getElementById('runBtn').addEventListener('click', async () => {
+function showToast(message, type) {
+  const toast = document.createElement('div');
+  toast.textContent = message;
+  toast.style.cssText = `position:fixed;bottom:20px;right:20px;z-index:2000;padding:12px 20px;
+    border-radius:10px;color:#fff;font-size:.9rem;font-weight:500;
+    background:${type === 'error' ? '#DC2626' : '#059669'};box-shadow:0 10px 30px rgba(0,0,0,.4);`;
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 3000);
+}
+
+async function runKNN() {
   const trainingData = document.getElementById('trainingData').value.trim();
   const queryPoint = document.getElementById('queryPoint').value.trim();
   const k = document.getElementById('kValue').value;
   if (!trainingData || !queryPoint || !k) return showToast('Please fill in all fields.', 'error');
 
-  setLoading(true);
+  const box = document.getElementById('outputBox');
+  box.innerHTML = '<p class="text-secondary mb-0">Running…</p>';
+
   try {
     const res = await fetch('/api/knn', {
       method: 'POST',
@@ -71,42 +85,49 @@ document.getElementById('runBtn').addEventListener('click', async () => {
       body: JSON.stringify({training_data: trainingData, query_point: queryPoint, k})
     });
     const data = await res.json();
-    setLoading(false);
-    if (!data.success) return showToast(data.error, 'error');
+    if (!data.success) { box.innerHTML = `<p class="text-danger mb-0">${data.error}</p>`; return showToast(data.error, 'error'); }
 
     const r = data.result;
     const rows = r.neighbors.map(n => `
-      <tr>
-        <td>[${n.point.join(', ')}]</td>
-        <td>${n.label}</td>
-        <td>${n.distance}</td>
-      </tr>
+      <tr><td>[${n.point.join(', ')}]</td><td>${n.label}</td><td>${n.distance}</td></tr>
     `).join('');
-    const votes = Object.entries(r.vote_counts).map(([label, count]) => `<span class="cluster-chip">${label}: ${count} vote(s)</span>`).join('');
+    const votes = Object.entries(r.vote_counts).map(([label, count]) =>
+      `<span class="d-inline-block px-2 py-1 rounded-pill me-1 mb-1" style="background:rgba(255,255,255,.06);font-size:.8rem;">${label}: ${count} vote(s)</span>`
+    ).join('');
 
-    renderOutput(`
-      <div class="result-badge result-good">
-        <i class="fa-solid fa-check"></i> Predicted label: ${r.predicted_label}
+    box.innerHTML = `
+      <div class="fusion-badge mb-3" style="color:#34D399;border-color:rgba(16,185,129,.3);">
+        <i class="fa-solid fa-check me-1"></i> Predicted label: ${r.predicted_label}
       </div>
-      <div style="margin-bottom:14px;">${votes}</div>
-      <table class="data-table">
+      <div class="mb-3">${votes}</div>
+      <table>
         <thead><tr><th>Neighbor</th><th>Label</th><th>Distance</th></tr></thead>
         <tbody>${rows}</tbody>
-      </table>
-    `);
+      </table>`;
     showToast('Program executed successfully.', 'success');
   } catch (e) {
-    setLoading(false);
+    box.innerHTML = '<p class="text-danger mb-0">Something went wrong contacting the backend.</p>';
     showToast('Something went wrong contacting the backend.', 'error');
   }
+}
+
+document.getElementById('runBtn').addEventListener('click', runKNN);
+
+document.getElementById('demoBtn').addEventListener('click', () => {
+  document.getElementById('trainingData').value = '1 2 A\n2 1 A\n2 3 A\n8 8 B\n9 8 B\n8 9 B';
+  document.getElementById('queryPoint').value = '2 2';
+  document.getElementById('kValue').value = '3';
+  runKNN();
 });
 
-document.getElementById('clearBtn').addEventListener('click', () => resetOutput());
+document.getElementById('clearBtn').addEventListener('click', () => {
+  document.getElementById('outputBox').innerHTML = '<p class="text-secondary mb-0">Run the program or try the demo to see results here.</p>';
+});
 document.getElementById('resetBtn').addEventListener('click', () => {
   document.getElementById('trainingData').value = '';
   document.getElementById('queryPoint').value = '';
   document.getElementById('kValue').value = '';
-  resetOutput();
+  document.getElementById('outputBox').innerHTML = '<p class="text-secondary mb-0">Run the program or try the demo to see results here.</p>';
 });
 </script>
 {% endblock %}
