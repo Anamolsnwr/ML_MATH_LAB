@@ -1,49 +1,51 @@
-{% extends "base.html" %}
-{% block title %}Logistic Regression — ML Math Lab{% endblock %}
+{% extends 'base.html' %}
 
 {% block content %}
-<section class="program-page">
-  <div class="container">
+<section class="py-4">
+  <a href="{{ url_for('home') }}#nodes" class="text-secondary text-decoration-none d-inline-block mb-4">
+    <i class="fa-solid fa-arrow-left me-1"></i> All nodes
+  </a>
 
-    <a href="{{ url_for('home') }}#programs" class="back-link"><i class="fa-solid fa-arrow-left"></i> All programs</a>
+  <div class="d-flex align-items-center gap-3 mb-4">
+    <div class="p-3 rounded-4" style="background: rgba(244, 63, 94, 0.15); color: #FB7185;">
+      <i class="fa-solid fa-wave-square fa-xl"></i>
+    </div>
+    <div>
+      <span class="fusion-badge" style="color: #FB7185; border-color: rgba(244, 63, 94, 0.3);">ML CLASSIFICATION</span>
+      <h1 class="fw-bold text-white mb-0 mt-1" style="font-family: var(--font-display);">Logistic Regression</h1>
+      <p class="text-secondary small mb-0">Train a binary classifier using gradient descent and the sigmoid function.</p>
+    </div>
+  </div>
 
-    <div class="program-header" data-aos="fade-up">
-      <div class="program-icon-lg"><i class="fa-solid fa-wave-square"></i></div>
-      <div>
-        <h1>Logistic Regression</h1>
-        <p>Train a binary classifier with gradient descent and the sigmoid function, implemented from scratch with NumPy.</p>
+  <div class="row g-4">
+    <div class="col-lg-6">
+      <div class="fusion-node p-4 h-100">
+        <h5 class="fw-bold text-white mb-3"><i class="fa-solid fa-sliders me-2"></i>Input</h5>
+
+        <div class="mb-3">
+          <label class="text-secondary small mb-1 d-block">Training data — features then 0/1 label, one row per line</label>
+          <textarea class="form-control fusion-input" id="trainingData" rows="7" placeholder="0.5 0&#10;1.0 0&#10;1.5 0&#10;3.0 1&#10;3.5 1&#10;4.0 1"></textarea>
+        </div>
+        <div class="mb-3">
+          <label class="text-secondary small mb-1 d-block">Query point to classify (optional)</label>
+          <input type="text" class="form-control fusion-input" id="queryPoint" placeholder="e.g. 2.2">
+        </div>
+        <p class="text-secondary small"><i class="fa-solid fa-circle-info me-1"></i>Labels must be 0 or 1. Trains for 1000 epochs at learning rate 0.1.</p>
+
+        <div class="d-flex flex-wrap gap-2 mt-3">
+          <button class="btn btn-fusion" id="runBtn"><i class="fa-solid fa-play me-1"></i>Run Program</button>
+          <button class="btn demo-btn" id="demoBtn"><i class="fa-solid fa-wand-magic-sparkles me-1"></i>Try Demo</button>
+          <button class="btn btn-fusion-secondary" id="clearBtn"><i class="fa-solid fa-eraser me-1"></i>Clear</button>
+          <button class="btn btn-fusion-secondary" id="resetBtn"><i class="fa-solid fa-rotate-left me-1"></i>Reset</button>
+        </div>
       </div>
     </div>
 
-    <div class="row g-4">
-      <div class="col-lg-6" data-aos="fade-up">
-        <div class="panel glass">
-          <h5 class="panel-title"><i class="fa-solid fa-sliders"></i> Input</h5>
-
-          <div class="mb-3">
-            <label class="form-label" for="trainingData">Training data — features then 0/1 label, one row per line</label>
-            <textarea class="form-control mml-input" id="trainingData" rows="8" placeholder="0.5 0&#10;1.0 0&#10;1.5 0&#10;3.0 1&#10;3.5 1&#10;4.0 1"></textarea>
-          </div>
-          <div class="mb-3">
-            <label class="form-label" for="queryPoint">Query point to classify (optional)</label>
-            <input type="text" class="form-control mml-input" id="queryPoint" placeholder="e.g. 2.2">
-          </div>
-          <p class="hint"><i class="fa-solid fa-circle-info"></i> Labels must be 0 or 1. Trains for 1000 epochs at a learning rate of 0.1.</p>
-
-          <div class="btn-row">
-            <button class="btn btn-gradient" id="runBtn"><i class="fa-solid fa-play"></i> Run Program</button>
-            <button class="btn btn-outline-glass" id="clearBtn"><i class="fa-solid fa-eraser"></i> Clear</button>
-            <button class="btn btn-outline-glass" id="resetBtn"><i class="fa-solid fa-rotate-left"></i> Reset</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-lg-6" data-aos="fade-up" data-aos-delay="100">
-        <div class="panel glass output-panel">
-          <h5 class="panel-title"><i class="fa-solid fa-terminal"></i> Output</h5>
-          <div id="outputBox" class="output-box">
-            <p class="output-placeholder">Run the program to see results here.</p>
-          </div>
+    <div class="col-lg-6">
+      <div class="fusion-node p-4 h-100">
+        <h5 class="fw-bold text-white mb-3"><i class="fa-solid fa-terminal me-2"></i>Output</h5>
+        <div id="outputBox" class="output-box">
+          <p class="text-secondary mb-0">Run the program or try the demo to see results here.</p>
         </div>
       </div>
     </div>
@@ -53,12 +55,29 @@
 
 {% block extra_scripts %}
 <script>
-document.getElementById('runBtn').addEventListener('click', async () => {
+function showToast(message, type) {
+  const toast = document.createElement('div');
+  toast.textContent = message;
+  toast.style.cssText = `position:fixed;bottom:20px;right:20px;z-index:2000;padding:12px 20px;
+    border-radius:10px;color:#fff;font-size:.9rem;font-weight:500;
+    background:${type === 'error' ? '#DC2626' : '#059669'};box-shadow:0 10px 30px rgba(0,0,0,.4);`;
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 3000);
+}
+
+function row(label, value) {
+  return `<div class="d-flex justify-content-between border-bottom border-secondary border-opacity-25 py-2">
+    <span class="text-secondary small">${label}</span><strong class="small" style="color:#38BDF8;">${value}</strong></div>`;
+}
+
+async function runLogisticRegression() {
   const trainingData = document.getElementById('trainingData').value.trim();
   const queryPoint = document.getElementById('queryPoint').value.trim();
   if (!trainingData) return showToast('Please enter training data.', 'error');
 
-  setLoading(true);
+  const box = document.getElementById('outputBox');
+  box.innerHTML = '<p class="text-secondary mb-0">Running…</p>';
+
   try {
     const res = await fetch('/api/logistic-regression', {
       method: 'POST',
@@ -66,49 +85,51 @@ document.getElementById('runBtn').addEventListener('click', async () => {
       body: JSON.stringify({training_data: trainingData, query_point: queryPoint})
     });
     const data = await res.json();
-    setLoading(false);
-    if (!data.success) return showToast(data.error, 'error');
+    if (!data.success) { box.innerHTML = `<p class="text-danger mb-0">${data.error}</p>`; return showToast(data.error, 'error'); }
 
     const r = data.result;
-    const rows = r.training_rows.map(row => `
-      <tr>
-        <td>[${row.features.join(', ')}]</td>
-        <td>${row.actual}</td>
-        <td>${row.predicted}</td>
-        <td>${row.probability}</td>
-      </tr>
+    const rows = r.training_rows.map(rrow => `
+      <tr><td>[${rrow.features.join(', ')}]</td><td>${rrow.actual}</td><td>${rrow.predicted}</td><td>${rrow.probability}</td></tr>
     `).join('');
 
     const queryBlock = r.query_probability !== undefined ? `
-      <div class="result-badge ${r.query_predicted_label === 1 ? 'result-good' : 'result-bad'}">
-        <i class="fa-solid fa-check"></i> Query prediction: class ${r.query_predicted_label} (probability ${r.query_probability})
-      </div>
-    ` : '';
+      <div class="fusion-badge mb-3" style="color:${r.query_predicted_label === 1 ? '#34D399' : '#FB7185'};border-color:${r.query_predicted_label === 1 ? 'rgba(16,185,129,.3)' : 'rgba(244,63,94,.3)'};">
+        <i class="fa-solid fa-check me-1"></i> Query prediction: class ${r.query_predicted_label} (probability ${r.query_probability})
+      </div>` : '';
 
-    renderOutput(`
+    box.innerHTML = `
       ${queryBlock}
-      <div class="result-grid" style="margin-bottom:16px;">
-        <div class="result-row"><span>Weights</span><strong>[${r.weights.join(', ')}]</strong></div>
-        <div class="result-row"><span>Bias</span><strong>${r.bias}</strong></div>
-        <div class="result-row"><span>Training accuracy</span><strong>${(r.training_accuracy * 100).toFixed(1)}%</strong></div>
+      <div class="mb-3">
+        ${row('Weights', '[' + r.weights.join(', ') + ']')}
+        ${row('Bias', r.bias)}
+        ${row('Training accuracy', (r.training_accuracy * 100).toFixed(1) + '%')}
       </div>
-      <table class="data-table">
+      <table>
         <thead><tr><th>Features</th><th>Actual</th><th>Predicted</th><th>Probability</th></tr></thead>
         <tbody>${rows}</tbody>
-      </table>
-    `);
+      </table>`;
     showToast('Program executed successfully.', 'success');
   } catch (e) {
-    setLoading(false);
+    box.innerHTML = '<p class="text-danger mb-0">Something went wrong contacting the backend.</p>';
     showToast('Something went wrong contacting the backend.', 'error');
   }
+}
+
+document.getElementById('runBtn').addEventListener('click', runLogisticRegression);
+
+document.getElementById('demoBtn').addEventListener('click', () => {
+  document.getElementById('trainingData').value = '0.5 0\n1.0 0\n1.5 0\n3.0 1\n3.5 1\n4.0 1';
+  document.getElementById('queryPoint').value = '2.2';
+  runLogisticRegression();
 });
 
-document.getElementById('clearBtn').addEventListener('click', () => resetOutput());
+document.getElementById('clearBtn').addEventListener('click', () => {
+  document.getElementById('outputBox').innerHTML = '<p class="text-secondary mb-0">Run the program or try the demo to see results here.</p>';
+});
 document.getElementById('resetBtn').addEventListener('click', () => {
   document.getElementById('trainingData').value = '';
   document.getElementById('queryPoint').value = '';
-  resetOutput();
+  document.getElementById('outputBox').innerHTML = '<p class="text-secondary mb-0">Run the program or try the demo to see results here.</p>';
 });
 </script>
 {% endblock %}
