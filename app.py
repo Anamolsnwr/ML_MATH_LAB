@@ -55,7 +55,19 @@ def knn_page():
 def logistic_regression_page():
     return render_template("logistic_regression.html")
 
+@app.route("/naive-bayes")
+def naive_bayes_page():
+    return render_template("naive_bayes.html")
 
+
+@app.route("/pca")
+def pca_page():
+    return render_template("pca.html")
+
+
+@app.route("/decision-tree")
+def decision_tree_page():
+    return render_template("decision_tree.html")
 # --- API EXECUTION ENDPOINTS ---
 
 @app.route('/api/identity', methods=['POST'])
