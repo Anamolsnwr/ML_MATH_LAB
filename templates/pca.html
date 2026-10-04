@@ -1,0 +1,151 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="py-4">
+  <a href="{{ url_for('home') }}#nodes" class="text-secondary text-decoration-none d-inline-block mb-4">
+    <i class="fa-solid fa-arrow-left me-1"></i> All nodes
+  </a>
+
+  <div class="d-flex align-items-center gap-3 mb-4">
+    <div class="p-3 rounded-4" style="background: rgba(129, 140, 248, 0.15); color: #818CF8;">
+      <i class="fa-solid fa-compress fa-xl"></i>
+    </div>
+    <div>
+      <span class="fusion-badge" style="color: #818CF8; border-color: rgba(129, 140, 248, 0.3);">DIMENSIONALITY REDUCTION</span>
+      <h1 class="fw-bold text-white mb-0 mt-1" style="font-family: var(--font-display);">Principal Component Analysis</h1>
+      <p class="text-secondary small mb-0">Find the directions of greatest variance in your data and project onto them.</p>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-lg-6">
+      <div class="fusion-node p-4 h-100">
+        <h5 class="fw-bold text-white mb-3"><i class="fa-solid fa-sliders me-2"></i>Input</h5>
+
+        <div class="mb-3">
+          <label class="text-secondary small mb-1 d-block">Points — one row of numbers per line</label>
+          <textarea class="form-control fusion-input" id="pointsInput" rows="8" placeholder="2.5 2.4&#10;0.5 0.7&#10;2.2 2.9&#10;1.9 2.2&#10;3.1 3.0&#10;2.3 2.7&#10;2 1.6&#10;1 1.1&#10;1.5 1.6&#10;1.1 0.9"></textarea>
+        </div>
+        <div class="mb-3">
+          <label class="text-secondary small mb-1 d-block">Number of components</label>
+          <input type="number" min="1" max="10" class="form-control fusion-input" id="nComponents" placeholder="e.g. 1">
+        </div>
+        <p class="text-secondary small"><i class="fa-solid fa-circle-info me-1"></i>All rows must have the same number of values. The plot only renders for 2D input.</p>
+
+        <div class="d-flex flex-wrap gap-2 mt-3">
+          <button class="btn btn-fusion" id="runBtn"><i class="fa-solid fa-play me-1"></i>Run Program</button>
+          <button class="btn demo-btn" id="demoBtn"><i class="fa-solid fa-wand-magic-sparkles me-1"></i>Try Demo</button>
+          <button class="btn btn-fusion-secondary" id="clearBtn"><i class="fa-solid fa-eraser me-1"></i>Clear</button>
+          <button class="btn btn-fusion-secondary" id="resetBtn"><i class="fa-solid fa-rotate-left me-1"></i>Reset</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-6">
+      <div class="fusion-node p-4 h-100">
+        <h5 class="fw-bold text-white mb-3"><i class="fa-solid fa-terminal me-2"></i>Output</h5>
+        <div id="outputBox" class="output-box">
+          <p class="text-secondary mb-0">Run the program or try the demo to see results here.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+function showToast(message, type) {
+  const toast = document.createElement('div');
+  toast.textContent = message;
+  toast.style.cssText = `position:fixed;bottom:20px;right:20px;z-index:2000;padding:12px 20px;
+    border-radius:10px;color:#fff;font-size:.9rem;font-weight:500;
+    background:${type === 'error' ? '#DC2626' : '#059669'};box-shadow:0 10px 30px rgba(0,0,0,.4);`;
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 3000);
+}
+
+function row(label, value) {
+  return `<div class="d-flex justify-content-between border-bottom border-secondary border-opacity-25 py-2">
+    <span class="text-secondary small">${label}</span><strong class="small" style="color:#38BDF8;">${value}</strong></div>`;
+}
+
+function buildPCAPlot(points, mean, components) {
+  if (points.length === 0 || points[0].length !== 2) return '';
+  const W = 300, H = 220, pad = 24;
+  const xs = points.map(p => p[0]), ys = points.map(p => p[1]);
+  const xMin = Math.min(...xs), xMax = Math.max(...xs);
+  const yMin = Math.min(...ys), yMax = Math.max(...ys);
+  const sx = x => pad + (xMax === xMin ? (W - 2*pad)/2 : (x - xMin) / (xMax - xMin) * (W - 2*pad));
+  const sy = y => H - pad - (yMax === yMin ? (H - 2*pad)/2 : (y - yMin) / (yMax - yMin) * (H - 2*pad));
+
+  const dots = points.map(p => `<circle cx="${sx(p[0])}" cy="${sy(p[1])}" r="4" fill="#38BDF8"></circle>`).join('');
+
+  let axisLine = '';
+  if (components.length > 0) {
+    const [dx, dy] = components[0];
+    const scale = Math.max(xMax - xMin, yMax - yMin) * 0.6;
+    const x1 = mean[0] - dx * scale, y1 = mean[1] - dy * scale;
+    const x2 = mean[0] + dx * scale, y2 = mean[1] + dy * scale;
+    axisLine = `<line x1="${sx(x1)}" y1="${sy(y1)}" x2="${sx(x2)}" y2="${sy(y2)}" stroke="#A855F7" stroke-width="2"/>`;
+  }
+
+  return `<svg viewBox="0 0 ${W} ${H}" style="width:100%;border-radius:12px;background:rgba(255,255,255,.03);">${axisLine}${dots}</svg>`;
+}
+
+async function runPCA() {
+  const points = document.getElementById('pointsInput').value.trim();
+  const nComponents = document.getElementById('nComponents').value || '2';
+  if (!points) return showToast('Please enter at least one point.', 'error');
+
+  const box = document.getElementById('outputBox');
+  box.innerHTML = '<p class="text-secondary mb-0">Running…</p>';
+
+  try {
+    const res = await fetch('/api/pca', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({points, n_components: nComponents})
+    });
+    const data = await res.json();
+    if (!data.success) { box.innerHTML = `<p class="text-danger mb-0">${data.error}</p>`; return showToast(data.error, 'error'); }
+
+    const r = data.result;
+    const plot = buildPCAPlot(r.original_points, r.mean, r.components);
+
+    const componentRows = r.components.map((c, i) =>
+      row(`Component ${i + 1} (${(r.explained_variance_ratio[i] * 100).toFixed(1)}% variance)`, '[' + c.join(', ') + ']')
+    ).join('');
+
+    box.innerHTML = `
+      ${plot}
+      <div class="mt-3">
+        ${row('Mean', '[' + r.mean.join(', ') + ']')}
+        ${row('Eigenvalues', '[' + r.eigenvalues.join(', ') + ']')}
+        ${componentRows}
+      </div>`;
+    showToast('Program executed successfully.', 'success');
+  } catch (e) {
+    box.innerHTML = '<p class="text-danger mb-0">Something went wrong contacting the backend.</p>';
+    showToast('Something went wrong contacting the backend.', 'error');
+  }
+}
+
+document.getElementById('runBtn').addEventListener('click', runPCA);
+
+document.getElementById('demoBtn').addEventListener('click', () => {
+  document.getElementById('pointsInput').value = '2.5 2.4\n0.5 0.7\n2.2 2.9\n1.9 2.2\n3.1 3.0\n2.3 2.7\n2 1.6\n1 1.1\n1.5 1.6\n1.1 0.9';
+  document.getElementById('nComponents').value = '1';
+  runPCA();
+});
+
+document.getElementById('clearBtn').addEventListener('click', () => {
+  document.getElementById('outputBox').innerHTML = '<p class="text-secondary mb-0">Run the program or try the demo to see results here.</p>';
+});
+document.getElementById('resetBtn').addEventListener('click', () => {
+  document.getElementById('pointsInput').value = '';
+  document.getElementById('nComponents').value = '';
+  document.getElementById('outputBox').innerHTML = '<p class="text-secondary mb-0">Run the program or try the demo to see results here.</p>';
+});
+</script>
+{% endblock %}
