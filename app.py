@@ -278,6 +278,90 @@ def api_logistic_regression():
     except Exception as exc:
         return jsonify({"success": False, "error": str(exc)}), 400
 
+@app.route("/api/naive-bayes", methods=["POST"])
+def api_naive_bayes():
+    try:
+        payload = request.get_json(force=True)
+
+        X = []
+        y = []
+        for line in payload["training_data"].strip().splitlines():
+            line = line.strip()
+            if not line:
+                continue
+            parts = line.replace(",", " ").split()
+            if len(parts) < 2:
+                raise ValueError(
+                    "Each training row needs one or more numbers followed by a label."
+                )
+            *features, label = parts
+            X.append([float(v) for v in features])
+            y.append(label)
+
+        if len(X) == 0:
+            raise ValueError("Please enter at least one training row.")
+
+        query_point = [float(v) for v in payload["query_point"].replace(",", " ").split()]
+
+        result = run_naive_bayes(X, y, query_point)
+        return jsonify({"success": True, "result": result})
+    except Exception as exc:
+        return jsonify({"success": False, "error": str(exc)}), 400
+
+
+@app.route("/api/pca", methods=["POST"])
+def api_pca():
+    try:
+        payload = request.get_json(force=True)
+        n_components = int(payload.get("n_components", 2))
+
+        points = []
+        for line in payload["points"].strip().splitlines():
+            line = line.strip()
+            if not line:
+                continue
+            parts = [float(v) for v in line.replace(",", " ").split()]
+            points.append(parts)
+
+        if len(points) == 0:
+            raise ValueError("Please enter at least one point.")
+
+        result = run_pca(points, n_components)
+        return jsonify({"success": True, "result": result})
+    except Exception as exc:
+        return jsonify({"success": False, "error": str(exc)}), 400
+
+
+@app.route("/api/decision-tree", methods=["POST"])
+def api_decision_tree():
+    try:
+        payload = request.get_json(force=True)
+        max_depth = int(payload.get("max_depth", 3))
+
+        X = []
+        y = []
+        for line in payload["training_data"].strip().splitlines():
+            line = line.strip()
+            if not line:
+                continue
+            parts = line.replace(",", " ").split()
+            if len(parts) < 2:
+                raise ValueError(
+                    "Each training row needs one or more numbers followed by a label."
+                )
+            *features, label = parts
+            X.append([float(v) for v in features])
+            y.append(label)
+
+        if len(X) == 0:
+            raise ValueError("Please enter at least one training row.")
+
+        query_point = [float(v) for v in payload["query_point"].replace(",", " ").split()]
+
+        result = run_decision_tree(X, y, query_point, max_depth=max_depth)
+        return jsonify({"success": True, "result": result})
+    except Exception as exc:
+        return jsonify({"success": False, "error": str(exc)}), 400
 
 if __name__ == '__main__':
     app.run(debug=True, port=5001)
