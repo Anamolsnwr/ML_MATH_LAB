@@ -6,7 +6,9 @@ from python_programs.linear_regression import run_linear_regression
 from python_programs.kmeans import run_kmeans
 from python_programs.knn import run_knn
 from python_programs.logistic_regression import run_logistic_regression
-
+from python_programs.naive_bayes import run_naive_bayes
+from python_programs.pca import run_pca
+from python_programs.decision_tree import run_decision_tree
 app = Flask(__name__)
 
 # --- PAGE ROUTES ---
