@@ -47,3 +47,14 @@ def run_pca(points, n_components=2):
         "original_points": [[round(float(v), 3) for v in p] for p in pts],
         "projected_points": [[round(float(v), 3) for v in p] for p in projected],
     }
+
+def explain_pca(result):
+    kept_variance = round(sum(result["explained_variance_ratio"][:result["n_components"]]) * 100, 1)
+    return (
+        f"Your original data had {len(result['mean'])} numbers per point. The program found the "
+        f"direction along which your points spread out the most (imagine tilting a line through a "
+        f"cloud of dots until it captures the widest spread) and used that as a new, single axis. "
+        f"Measuring each point's position along just that {result['n_components']} new axis/axes "
+        f"keeps {kept_variance}% of the original information, while needing fewer numbers to "
+        f"describe each point."
+    )
