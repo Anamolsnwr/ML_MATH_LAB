@@ -74,3 +74,15 @@ def run_naive_bayes(X, y, query_point):
         "query_point": [round(float(v), 3) for v in query_point],
         "predicted_label": predicted_label,
     }
+
+def explain_naive_bayes(result):
+    class_summaries = ", ".join(
+        f"{c['label']}: {round(c['probability']*100,1)}% likely" for c in result["classes"]
+    )
+    return (
+        f"For each class in your data, the program learned the typical average and spread of each "
+        f"feature (assuming a bell-curve shape). It then checked how 'typical' your new point looks "
+        f"for each class — a point very close to a class's average scores higher. "
+        f"Result: {class_summaries}. Since '{result['predicted_label']}' scored highest, "
+        f"that's the predicted class."
+    )
