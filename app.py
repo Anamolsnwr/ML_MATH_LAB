@@ -191,26 +191,14 @@ def api_linear_regression():
         return jsonify({"success": False, "error": str(exc)}), 400
 
 
+from python_programs.kmeans import run_kmeans, explain_kmeans
+
 @app.route("/api/kmeans", methods=["POST"])
 def api_kmeans():
     try:
-        payload = request.get_json(force=True)
-        k = int(payload["k"])
-
-        points = []
-        for line in payload["points"].strip().splitlines():
-            line = line.strip()
-            if not line:
-                continue
-            parts = [float(v) for v in line.replace(",", " ").split()]
-            if len(parts) != 2:
-                raise ValueError("Each point needs exactly 2 numbers (x y).")
-            points.append(parts)
-
-        if len(points) == 0:
-            raise ValueError("Please enter at least one point.")
-
+        ...
         result = run_kmeans(points, k)
+        result["explanation"] = explain_kmeans(result)   # <-- add this line
         return jsonify({"success": True, "result": result})
     except Exception as exc:
         return jsonify({"success": False, "error": str(exc)}), 400
