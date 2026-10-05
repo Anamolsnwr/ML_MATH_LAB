@@ -109,14 +109,15 @@ async function runLinearRegression() {
     const r = data.result;
     const predictionRow = r.predicted_y !== undefined ? row(`Predicted y at x = ${r.predict_x}`, r.predicted_y) : '';
 
-    box.innerHTML = `
+   box.innerHTML = `
       ${buildRegressionPlot(r.points)}
+      <div class="mb-3 p-3 rounded-3" style="background: rgba(168,85,247,0.1); border: 1px solid rgba(168,85,247,0.3);">
+        <div class="small fw-bold mb-1" style="color:#C084FC;"><i class="fa-solid fa-lightbulb me-1"></i>What this means</div>
+        <div class="small text-light">${r.explanation}</div>
+      </div>
       <div class="mt-3">
         ${row('Equation', r.equation)}
-        ${row('Slope', r.slope)}
-        ${row('Intercept', r.intercept)}
-        ${row('R&sup2; (fit quality)', r.r_squared)}
-        ${predictionRow}
+        ...
       </div>`;
     showToast('Program executed successfully.', 'success');
   } catch (e) {
