@@ -172,6 +172,8 @@ def api_statistics():
     return jsonify({'status': 'success', 'output': output})
 
 
+from python_programs.linear_regression import run_linear_regression, explain_linear_regression
+
 @app.route("/api/linear-regression", methods=["POST"])
 def api_linear_regression():
     try:
@@ -183,6 +185,7 @@ def api_linear_regression():
         predict_x = float(predict_x) if predict_x not in (None, "") else None
 
         result = run_linear_regression(x_values, y_values, predict_x)
+        result["explanation"] = explain_linear_regression(result)   # <-- new line
         return jsonify({"success": True, "result": result})
     except Exception as exc:
         return jsonify({"success": False, "error": str(exc)}), 400
