@@ -56,3 +56,15 @@ def run_kmeans(points, k, max_iters=100, seed=42):
         "points": [[round(float(p[0]), 3), round(float(p[1]), 3)] for p in pts],
         "clusters": clusters,
     }
+
+def explain_kmeans(result):
+    sizes = [c["size"] for c in result["clusters"]]
+    biggest = max(result["clusters"], key=lambda c: c["size"])
+    return (
+        f"The program split your {len(result['points'])} points into {result['k']} groups. "
+        f"It did this by guessing {result['k']} starting center points, then repeating two steps: "
+        f"(1) assign every point to whichever center is closest, and (2) move each center to the "
+        f"average position of the points assigned to it. It repeated this {result['iterations']} "
+        f"time(s) until the groups stopped changing. The largest group (Cluster {biggest['cluster_id']}) "
+        f"contains {biggest['size']} of your points."
+    )
