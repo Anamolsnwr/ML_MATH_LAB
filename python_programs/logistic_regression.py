@@ -67,3 +67,20 @@ def run_logistic_regression(X, y, query_point=None, learning_rate=0.1, epochs=10
         result["query_predicted_label"] = int(prob >= 0.5)
 
     return result
+
+def explain_logistic_regression(result):
+    acc_pct = round(result["training_accuracy"] * 100, 1)
+    explanation = (
+        f"The program searched for the best weighted combination of your features that separates "
+        f"class 0 from class 1, adjusting that combination gradually over {result['epochs']} rounds "
+        f"(a process called gradient descent) until it stopped improving. "
+        f"It then passes any new point through an S-shaped curve that squeezes the result into a "
+        f"probability between 0 and 1 — above 0.5 means class 1, below means class 0. "
+        f"On your own training data, it correctly classified {acc_pct}% of the rows."
+    )
+    if "query_probability" in result:
+        explanation += (
+            f" For your query point, it calculated a {round(result['query_probability']*100,1)}% "
+            f"probability of being class 1, so it predicted class {result['query_predicted_label']}."
+        )
+    return explanation
