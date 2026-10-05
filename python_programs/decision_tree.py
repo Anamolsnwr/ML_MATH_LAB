@@ -138,3 +138,14 @@ def run_decision_tree(X, y, query_point, max_depth=3, min_samples_split=2):
         "training_accuracy": round(accuracy, 4),
         "max_depth": max_depth,
     }
+
+def explain_decision_tree(result):
+    acc_pct = round(result["training_accuracy"] * 100, 1)
+    return (
+        f"The program built a flowchart of yes/no questions about your feature values (like "
+        f"'is x0 less than 5?'). At each step, it picked the question that best separated your "
+        f"labels into clean, single-class groups (measured using something called Gini impurity — "
+        f"lower means purer groups). Starting at the top and following the matching answers down to "
+        f"a leaf gives the prediction '{result['predicted_label']}' for your query point. "
+        f"This tree correctly classifies {acc_pct}% of your training rows."
+    )
