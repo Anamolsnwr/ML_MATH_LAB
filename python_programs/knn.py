@@ -47,3 +47,13 @@ def run_knn(training_points, training_labels, query_point, k):
         "vote_counts": dict(votes),
         "predicted_label": predicted_label,
     }
+
+def explain_knn(result):
+    vote_summary = ", ".join(f"{count} voted {label}" for label, count in result["vote_counts"].items())
+    return (
+        f"To classify your new point, the program measured the straight-line distance from it to "
+        f"every training point, then looked only at the {result['k']} closest ones (its 'neighbors'). "
+        f"Among those neighbors: {vote_summary}. Since most neighbors belonged to "
+        f"'{result['predicted_label']}', the program predicted that label for your new point — "
+        f"like asking your {result['k']} nearest acquaintances what they think and going with the majority."
+    )
