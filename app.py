@@ -249,7 +249,7 @@ def api_knn():
     except Exception as exc:
         return jsonify({"success": False, "error": str(exc)}), 400
 
-
+from python_programs.logistic_regression import run_logistic_regression, explain_logistic_regression
 @app.route("/api/logistic-regression", methods=["POST"])
 def api_logistic_regression():
     try:
@@ -279,10 +279,12 @@ def api_logistic_regression():
         )
 
         result = run_logistic_regression(X, y, query_point)
+        result["explanation"] = explain_logistic_regression(result) 
         return jsonify({"success": True, "result": result})
     except Exception as exc:
         return jsonify({"success": False, "error": str(exc)}), 400
 
+from python_programs.naive_bayes import run_naive_bayes, explain_naive_bayes
 @app.route("/api/naive-bayes", methods=["POST"])
 def api_naive_bayes():
     try:
@@ -309,11 +311,12 @@ def api_naive_bayes():
         query_point = [float(v) for v in payload["query_point"].replace(",", " ").split()]
 
         result = run_naive_bayes(X, y, query_point)
+        result["explanation"] = explain_naive_bayes(result)
         return jsonify({"success": True, "result": result})
     except Exception as exc:
         return jsonify({"success": False, "error": str(exc)}), 400
 
-
+from python_programs.pca import run_pca, explain_pca
 @app.route("/api/pca", methods=["POST"])
 def api_pca():
     try:
@@ -332,11 +335,12 @@ def api_pca():
             raise ValueError("Please enter at least one point.")
 
         result = run_pca(points, n_components)
+        result["explanation"] = explain_pca(result)
         return jsonify({"success": True, "result": result})
     except Exception as exc:
         return jsonify({"success": False, "error": str(exc)}), 400
 
-
+from python_programs.decision_tree import run_decision_tree, explain_decision_tree
 @app.route("/api/decision-tree", methods=["POST"])
 def api_decision_tree():
     try:
@@ -364,6 +368,7 @@ def api_decision_tree():
         query_point = [float(v) for v in payload["query_point"].replace(",", " ").split()]
 
         result = run_decision_tree(X, y, query_point, max_depth=max_depth)
+        result["explanation"] = explain_decision_tree(result)
         return jsonify({"success": True, "result": result})
     except Exception as exc:
         return jsonify({"success": False, "error": str(exc)}), 400
