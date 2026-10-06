@@ -35,3 +35,28 @@ def compute_vectors(vector_a_str, vector_b_str):
         results["cross_product"] = np.cross(A, B).tolist()
 
     return results
+
+def explain_vector_operations(result):
+    dot = result["dot_product"]
+    if dot > 0:
+        angle_hint = "pointing in a broadly similar direction (angle under 90°)"
+    elif dot < 0:
+        angle_hint = "pointing in broadly opposite directions (angle over 90°)"
+    else:
+        angle_hint = "pointing exactly perpendicular to each other (90° apart)"
+
+    explanation = (
+        f"Addition and subtraction just combine the vectors coordinate by coordinate. "
+        f"The dot product ({round(dot, 3)}) multiplies matching coordinates and adds "
+        f"them up — its sign tells you the vectors are {angle_hint}. "
+        f"The magnitude is each vector's length, found with the Pythagorean theorem "
+        f"extended to more dimensions ({round(result['magnitude_a'], 3)} for A, "
+        f"{round(result['magnitude_b'], 3)} for B). "
+        f"The unit vectors are the same directions scaled down to exactly length 1."
+    )
+    if result.get("cross_product") is not None:
+        explanation += (
+            " The cross product gives a new vector perpendicular to both A and B — "
+            "useful for finding a direction 'sideways' to a flat plane."
+        )
+    return explanation

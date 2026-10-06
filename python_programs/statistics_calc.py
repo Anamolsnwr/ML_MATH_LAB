@@ -30,3 +30,31 @@ def calculate_statistics(numbers_str):
         "variance": variance_val,
         "stdev": stdev_val
     }
+
+def explain_statistics(result):
+    mean = result["mean"]
+    median = result["median"]
+
+    if isinstance(result["std_dev"], str):
+        spread_hint = "There wasn't enough data to measure how spread out the numbers are."
+    else:
+        spread_hint = (
+            f"The standard deviation ({result['std_dev']}) tells you how far, on average, "
+            f"each number strays from the mean — a small number means the data is tightly "
+            f"clustered, a large one means it's spread out."
+        )
+
+    if abs(mean - median) < 0.01:
+        shape_hint = "Since the mean and median are nearly equal, your data looks fairly symmetric (no strong skew)."
+    elif mean > median:
+        shape_hint = "Since the mean is higher than the median, a few unusually large values are pulling the average up."
+    else:
+        shape_hint = "Since the mean is lower than the median, a few unusually small values are pulling the average down."
+
+    return (
+        f"The mean ({mean}) is the regular average — add everything up and divide by "
+        f"how many numbers there are. The median ({median}) is the true middle value "
+        f"when the numbers are sorted — less thrown off by extreme outliers than the mean. "
+        f"The mode ({result['mode']}) is simply whichever value appears most often. "
+        f"{spread_hint} {shape_hint}"
+    )
