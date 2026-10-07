@@ -14,9 +14,7 @@ from python_programs.logistic_regression import run_logistic_regression
 from python_programs.naive_bayes import run_naive_bayes
 from python_programs.pca import run_pca
 from python_programs.decision_tree import run_decision_tree
-
 app = Flask(__name__)
-
 
 # --- PAGE ROUTES ---
 @app.route('/')
@@ -75,8 +73,6 @@ def pca_page():
 @app.route("/decision-tree")
 def decision_tree_page():
     return render_template("decision_tree.html")
-
-
 # --- API EXECUTION ENDPOINTS ---
 
 @app.route('/api/identity', methods=['POST'])
@@ -85,15 +81,11 @@ def api_identity():
     size = data.get('size', 3)
     if size < 1 or size > 15:
         return jsonify({'status': 'error', 'message': 'Size must be between 1 and 15.'})
-
+    
     matrix = np.eye(size, dtype=int)
-
-    result = check_identity_matrix(matrix)
-    result["explanation"] = explain_identity_matrix(result)
-
     formatted_matrix = "\n".join(["[" + " ".join(f"{num:3d}" for num in row) + "]" for row in matrix])
     output = f"[SYS_EXEC] Identity Matrix ({size}x{size}):\n\n{formatted_matrix}"
-    return jsonify({'status': 'success', 'output': output, 'result': result})
+    return jsonify({'status': 'success', 'output': output})
 
 
 @app.route('/api/probability', methods=['POST'])
@@ -101,24 +93,21 @@ def api_probability():
     data = request.get_json()
     favorable = data.get('favorable', 0)
     total = data.get('total', 1)
-
+    
     if total <= 0:
         return jsonify({'status': 'error', 'message': 'Total outcomes must be greater than 0.'})
     if favorable > total:
         return jsonify({'status': 'error', 'message': 'Favorable outcomes cannot exceed total outcomes.'})
-
-    result = calculate_probability(favorable, total)
-    result["explanation"] = explain_probability(result)
-
+    
     prob = favorable / total
     percentage = prob * 100
     odds = f"{favorable} : {total - favorable}"
-
+    
     output = (f"[BAYESIAN_ENGINE] Probability Output:\n"
               f"  • Probability P(A) : {prob:.4f}\n"
               f"  • Likelihood Ratio : {percentage:.2f}%\n"
               f"  • Odds Ratio (A:A'): {odds}")
-    return jsonify({'status': 'success', 'output': output, 'result': result})
+    return jsonify({'status': 'success', 'output': output})
 
 
 @app.route('/api/random', methods=['POST'])
@@ -127,17 +116,13 @@ def api_random():
     count = data.get('count', 10)
     min_val = data.get('min', 1)
     max_val = data.get('max', 100)
-
+    
     if min_val >= max_val:
         return jsonify({'status': 'error', 'message': 'Min boundary must be strictly less than Max boundary.'})
-
-    length = count
-    result = generate_password(length)
-    result["explanation"] = explain_random_password(result)
-
+    
     samples = [round(random.uniform(min_val, max_val), 2) for _ in range(count)]
     output = f"[STOCHASTIC_ENGINE] Generated {count} Random Samples:\n\n" + str(samples)
-    return jsonify({'status': 'success', 'output': output, 'result': result})
+    return jsonify({'status': 'success', 'output': output})
 
 
 @app.route('/api/vector', methods=['POST'])
@@ -148,26 +133,23 @@ def api_vector():
         vec_b = np.array([float(x.strip()) for x in data.get('vector_b', '').split(',')])
     except ValueError:
         return jsonify({'status': 'error', 'message': 'Invalid vector format. Use numbers separated by commas.'})
-
+    
     if vec_a.shape != vec_b.shape:
         return jsonify({'status': 'error', 'message': f'Dimension mismatch! Vector A has {len(vec_a)} dims, Vector B has {len(vec_b)} dims.'})
-
-    result = compute_vector_operations(vec_a, vec_b)
-    result["explanation"] = explain_vector_operations(result)
-
+    
     addition = vec_a + vec_b
     dot_product = np.dot(vec_a, vec_b)
     norm_a = np.linalg.norm(vec_a)
     norm_b = np.linalg.norm(vec_b)
     cosine_sim = dot_product / (norm_a * norm_b) if norm_a and norm_b else 0
-
+    
     output = (f"[VECTOR_SPACE_NODE] Calculations:\n"
               f"  • Vector A + B : {addition.tolist()}\n"
               f"  • Dot Product  : {dot_product}\n"
               f"  • Magnitude ||A|| : {norm_a:.4f}\n"
               f"  • Magnitude ||B|| : {norm_b:.4f}\n"
               f"  • Cosine Similarity: {cosine_sim:.4f}")
-    return jsonify({'status': 'success', 'output': output, 'result': result})
+    return jsonify({'status': 'success', 'output': output})
 
 
 @app.route('/api/statistics', methods=['POST'])
@@ -177,25 +159,22 @@ def api_statistics():
         raw_dataset = [float(x.strip()) for x in data.get('dataset', '').split(',')]
     except ValueError:
         return jsonify({'status': 'error', 'message': 'Invalid dataset format. Enter numbers separated by commas.'})
-
+    
     if len(raw_dataset) == 0:
         return jsonify({'status': 'error', 'message': 'Dataset cannot be empty.'})
-
-    result = calculate_statistics(raw_dataset)
-    result["explanation"] = explain_statistics(result)
-
+    
     mean_val = np.mean(raw_dataset)
     median_val = np.median(raw_dataset)
     variance_val = np.var(raw_dataset, ddof=1) if len(raw_dataset) > 1 else 0
     std_val = np.std(raw_dataset, ddof=1) if len(raw_dataset) > 1 else 0
-
+    
     output = (f"[STATISTICAL_METRICS] Feature Dataset Analysis:\n"
               f"  • Sample Count (N): {len(raw_dataset)}\n"
               f"  • Mean (μ)        : {mean_val:.4f}\n"
               f"  • Median          : {median_val:.4f}\n"
               f"  • Sample Variance : {variance_val:.4f}\n"
               f"  • Std Deviation (σ): {std_val:.4f}")
-    return jsonify({'status': 'success', 'output': output, 'result': result})
+    return jsonify({'status': 'success', 'output': output})
 
 
 from python_programs.linear_regression import run_linear_regression, explain_linear_regression
@@ -211,14 +190,12 @@ def api_linear_regression():
         predict_x = float(predict_x) if predict_x not in (None, "") else None
 
         result = run_linear_regression(x_values, y_values, predict_x)
-        result["explanation"] = explain_linear_regression(result)
+        result["explanation"] = explain_linear_regression(result)   # <-- new line
         return jsonify({"success": True, "result": result})
     except Exception as exc:
         return jsonify({"success": False, "error": str(exc)}), 400
 
-
 from python_programs.kmeans import run_kmeans, explain_kmeans
-
 @app.route("/api/kmeans", methods=["POST"])
 def api_kmeans():
     try:
@@ -239,14 +216,12 @@ def api_kmeans():
             raise ValueError("Please enter at least one point.")
 
         result = run_kmeans(points, k)
-        result["explanation"] = explain_kmeans(result)
+        result["explanation"] = explain_kmeans(result) 
         return jsonify({"success": True, "result": result})
     except Exception as exc:
         return jsonify({"success": False, "error": str(exc)}), 400
 
-
 from python_programs.knn import run_knn, explain_knn
-
 @app.route("/api/knn", methods=["POST"])
 def api_knn():
     try:
@@ -274,14 +249,12 @@ def api_knn():
         query_point = [float(v) for v in payload["query_point"].replace(",", " ").split()]
 
         result = run_knn(training_points, training_labels, query_point, k)
-        result["explanation"] = explain_knn(result)
+        result["explanation"] = explain_knn(result)  
         return jsonify({"success": True, "result": result})
     except Exception as exc:
         return jsonify({"success": False, "error": str(exc)}), 400
 
-
 from python_programs.logistic_regression import run_logistic_regression, explain_logistic_regression
-
 @app.route("/api/logistic-regression", methods=["POST"])
 def api_logistic_regression():
     try:
@@ -311,14 +284,12 @@ def api_logistic_regression():
         )
 
         result = run_logistic_regression(X, y, query_point)
-        result["explanation"] = explain_logistic_regression(result)
+        result["explanation"] = explain_logistic_regression(result) 
         return jsonify({"success": True, "result": result})
     except Exception as exc:
         return jsonify({"success": False, "error": str(exc)}), 400
 
-
 from python_programs.naive_bayes import run_naive_bayes, explain_naive_bayes
-
 @app.route("/api/naive-bayes", methods=["POST"])
 def api_naive_bayes():
     try:
@@ -350,9 +321,7 @@ def api_naive_bayes():
     except Exception as exc:
         return jsonify({"success": False, "error": str(exc)}), 400
 
-
 from python_programs.pca import run_pca, explain_pca
-
 @app.route("/api/pca", methods=["POST"])
 def api_pca():
     try:
@@ -376,9 +345,7 @@ def api_pca():
     except Exception as exc:
         return jsonify({"success": False, "error": str(exc)}), 400
 
-
 from python_programs.decision_tree import run_decision_tree, explain_decision_tree
-
 @app.route("/api/decision-tree", methods=["POST"])
 def api_decision_tree():
     try:
@@ -410,7 +377,6 @@ def api_decision_tree():
         return jsonify({"success": True, "result": result})
     except Exception as exc:
         return jsonify({"success": False, "error": str(exc)}), 400
-
 
 if __name__ == '__main__':
     app.run(debug=True, port=5001)
