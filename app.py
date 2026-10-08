@@ -3,9 +3,9 @@ import numpy as np
 import random
 import statistics
 from python_programs.identity_matrix import is_identity_matrix, explain_identity_matrix
-from python_programs.vector import compute_vector_operations, explain_vector_operations
+from python_programs.vector import compute_vectors, explain_vector_operations
 from python_programs.probability import calculate_probability, explain_probability
-from python_programs.random import generate_password, explain_random_password
+from python_programs.random import generate_random_password, explain_random_password
 from python_programs.statistics import calculate_statistics, explain_statistics
 from python_programs.linear_regression import run_linear_regression
 from python_programs.kmeans import run_kmeans
