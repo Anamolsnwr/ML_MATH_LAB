@@ -85,7 +85,16 @@ def api_identity():
     matrix = np.eye(size, dtype=int)
     formatted_matrix = "\n".join(["[" + " ".join(f"{num:3d}" for num in row) + "]" for row in matrix])
     output = f"[SYS_EXEC] Identity Matrix ({size}x{size}):\n\n{formatted_matrix}"
-    return jsonify({'status': 'success', 'output': output})
+
+    # <-- ADDED: plain-English explanation
+    explanation = (
+        f"An identity matrix has 1s running diagonally from the top-left to the "
+        f"bottom-right corner and 0s everywhere else. It is the 'do nothing' matrix: "
+        f"multiplying any matrix by it leaves that matrix unchanged, just like "
+        f"multiplying a number by 1. The program built a {size}x{size} one, so it "
+        f"has {size} ones on the diagonal and {size * size - size} zeros elsewhere."
+    )
+    return jsonify({'status': 'success', 'output': output, 'explanation': explanation})  # <-- CHANGED: added explanation
 
 
 @app.route('/api/probability', methods=['POST'])
@@ -107,7 +116,26 @@ def api_probability():
               f"  • Probability P(A) : {prob:.4f}\n"
               f"  • Likelihood Ratio : {percentage:.2f}%\n"
               f"  • Odds Ratio (A:A'): {odds}")
-    return jsonify({'status': 'success', 'output': output})
+
+    # <-- ADDED: plain-English explanation
+    if percentage >= 75:
+        odds_feel = "very likely to happen"
+    elif percentage >= 50:
+        odds_feel = "more likely than not to happen"
+    elif percentage >= 25:
+        odds_feel = "possible, but more likely not to happen"
+    else:
+        odds_feel = "unlikely to happen"
+
+    explanation = (
+        f"Probability is (ways the thing you want can happen) divided by "
+        f"(all the things that could possibly happen). Out of {total} possible "
+        f"outcomes, {favorable} count as a 'win', so the probability is "
+        f"{prob:.4f}, or {percentage:.2f}%. This event is {odds_feel}. "
+        f"The odds {odds} compare wins to non-wins directly: for every "
+        f"{favorable} win(s) there are {total - favorable} non-win(s)."
+    )
+    return jsonify({'status': 'success', 'output': output, 'explanation': explanation})  # <-- CHANGED: added explanation
 
 
 @app.route('/api/random', methods=['POST'])
@@ -122,7 +150,22 @@ def api_random():
     
     samples = [round(random.uniform(min_val, max_val), 2) for _ in range(count)]
     output = f"[STOCHASTIC_ENGINE] Generated {count} Random Samples:\n\n" + str(samples)
-    return jsonify({'status': 'success', 'output': output})
+
+    # <-- ADDED: plain-English explanation
+    explanation = (
+        f"The program picked {count} numbers between {min_val} and {max_val}. "
+        f"Each number is chosen independently, and every value in that range is "
+        f"equally likely (this is called a uniform distribution). "
+    )
+    if samples:
+        avg = round(sum(samples) / len(samples), 2)
+        middle = (min_val + max_val) / 2
+        explanation += (
+            f"The average of this batch is {avg}, while the exact middle of your "
+            f"range is {middle}. With only a few samples the average can drift "
+            f"away from the middle; with many samples it gets closer and closer."
+        )
+    return jsonify({'status': 'success', 'output': output, 'explanation': explanation})  # <-- CHANGED: added explanation
 
 
 @app.route('/api/vector', methods=['POST'])
@@ -149,7 +192,30 @@ def api_vector():
               f"  • Magnitude ||A|| : {norm_a:.4f}\n"
               f"  • Magnitude ||B|| : {norm_b:.4f}\n"
               f"  • Cosine Similarity: {cosine_sim:.4f}")
-    return jsonify({'status': 'success', 'output': output})
+
+    # <-- ADDED: plain-English explanation
+    if cosine_sim > 0.9:
+        direction_feel = "pointing in almost exactly the same direction"
+    elif cosine_sim > 0.1:
+        direction_feel = "pointing in broadly similar directions"
+    elif cosine_sim >= -0.1:
+        direction_feel = "pointing at right angles (perpendicular) to each other"
+    elif cosine_sim >= -0.9:
+        direction_feel = "pointing in broadly opposite directions"
+    else:
+        direction_feel = "pointing in almost exactly opposite directions"
+
+    explanation = (
+        f"Adding vectors combines them coordinate by coordinate. The dot product "
+        f"({round(float(dot_product), 3)}) multiplies matching coordinates and adds "
+        f"them up. The magnitude is a vector's length "
+        f"({round(float(norm_a), 3)} for A, {round(float(norm_b), 3)} for B). "
+        f"Cosine similarity ({round(float(cosine_sim), 3)}) divides the dot product by "
+        f"both lengths, so it ignores size and only measures direction: 1 means the "
+        f"same direction, 0 means perpendicular, -1 means opposite. "
+        f"Here the vectors are {direction_feel}."
+    )
+    return jsonify({'status': 'success', 'output': output, 'explanation': explanation})  # <-- CHANGED: added explanation
 
 
 @app.route('/api/statistics', methods=['POST'])
@@ -174,7 +240,32 @@ def api_statistics():
               f"  • Median          : {median_val:.4f}\n"
               f"  • Sample Variance : {variance_val:.4f}\n"
               f"  • Std Deviation (σ): {std_val:.4f}")
-    return jsonify({'status': 'success', 'output': output})
+
+    # <-- ADDED: plain-English explanation
+    if len(raw_dataset) > 1:
+        spread_hint = (
+            f"The standard deviation ({std_val:.4f}) tells you how far, on average, "
+            f"each number strays from the mean: small means tightly clustered, "
+            f"large means spread out. The variance ({variance_val:.4f}) is just the "
+            f"standard deviation squared."
+        )
+    else:
+        spread_hint = "There is only one number, so spread cannot be measured."
+
+    if abs(mean_val - median_val) < 0.01:
+        shape_hint = "The mean and median are nearly equal, so your data looks fairly symmetric."
+    elif mean_val > median_val:
+        shape_hint = "The mean is higher than the median, so a few unusually large values are pulling the average up."
+    else:
+        shape_hint = "The mean is lower than the median, so a few unusually small values are pulling the average down."
+
+    explanation = (
+        f"The mean ({mean_val:.4f}) is the regular average: add everything up and "
+        f"divide by how many numbers there are ({len(raw_dataset)}). The median "
+        f"({median_val:.4f}) is the middle value once the numbers are sorted, and "
+        f"it is less affected by extreme values. {spread_hint} {shape_hint}"
+    )
+    return jsonify({'status': 'success', 'output': output, 'explanation': explanation})  # <-- CHANGED: added explanation
 
 
 from python_programs.linear_regression import run_linear_regression, explain_linear_regression
@@ -379,5 +470,4 @@ def api_decision_tree():
         return jsonify({"success": False, "error": str(exc)}), 400
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5001)
-    app.run(debug=True, port=5001)
+    app.run(debug=True, port=5001)   # <-- FIXED: removed the duplicate second app.run line
