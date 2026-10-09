@@ -1,24 +1,32 @@
 {% extends 'base.html' %}
-{% block title %}Statistical ML Metrics — ML × MATH{% endblock %}
+{% block title %}Descriptive Statistics — ML × MATH{% endblock %}
 
 {% block content %}
+<style>
+  .stat-text { color: #CBD5E1; font-size: 1rem; line-height: 1.6; }
+  .stat-text strong { color: #F8FAFC; }
+  .stat-label { color: #CBD5E1; font-size: 1rem; }
+  .output-box pre { font-size: 1.05rem; }
+  #explanationText { font-size: 1rem; line-height: 1.6; color: #F1F5F9; }
+</style>
+
 <section class="py-4">
   <div class="d-flex align-items-center gap-3 mb-4">
     <div class="p-3 rounded-4" style="background: rgba(16, 185, 129, 0.15); color: #34D399;">
       <i class="fa-solid fa-chart-line fa-xl"></i>
     </div>
     <div>
-      <span class="fusion-badge" style="color: #34D399; border-color: rgba(16, 185, 129, 0.3);">ML ANALYTICS</span>
-      <h1 class="fw-bold text-white mb-0 mt-1" style="font-family: var(--font-display);">Statistical ML Metrics</h1>
-      <p class="text-secondary small mb-0">Summarize a list of numbers with its average, middle value, and spread.</p>
+      <span class="fusion-badge" style="color: #34D399; border-color: rgba(16, 185, 129, 0.3);">STATISTICS</span>
+      <h1 class="fw-bold text-white mb-0 mt-1" style="font-family: var(--font-display);">Descriptive Statistics</h1>
+      <p class="stat-text mb-0">Summarize numerical data using measures of center and spread.</p>
     </div>
   </div>
 
   <div class="fusion-node p-4 mb-4">
     <h5 class="fw-bold text-white mb-3"><i class="fa-solid fa-circle-info me-2" style="color:#34D399;"></i>About this module</h5>
-    <p class="text-secondary small mb-2"><strong class="text-light">What it is:</strong> Statistics boils a long list of numbers down to a few meaningful ones: the mean (average), the median (middle value), the variance and standard deviation (how spread out the numbers are).</p>
-    <p class="text-secondary small mb-2"><strong class="text-light">Why machine learning cares:</strong> Before training a model, you need to understand your data. These numbers also drive normalization, which rescales features so that no single feature overpowers the others.</p>
-    <p class="text-secondary small mb-0"><strong class="text-light">How to use it:</strong> Enter your numbers separated by commas (for example 4, 8, 6, 5, 3, 8, 9) and press Run. Variance and standard deviation need at least two numbers.</p>
+    <p class="stat-text mb-2"><strong>What it is:</strong> Descriptive statistics summarize numerical data using the mean, median, variance, and standard deviation.</p>
+    <p class="stat-text mb-2"><strong>Why it matters:</strong> These measures help you understand your data. Mean and standard deviation are used in z-score standardization, which puts numerical features on comparable scales.</p>
+    <p class="stat-text mb-0"><strong>How to use it:</strong> Enter at least two numbers separated by commas, then select Calculate. This tool reports sample variance and sample standard deviation.</p>
   </div>
 
   <div class="row g-4">
@@ -26,13 +34,13 @@
       <div class="fusion-node p-4 h-100">
         <h5 class="fw-bold text-white mb-3"><i class="fa-solid fa-sliders me-2"></i>Input</h5>
         <div class="mb-3">
-          <label class="text-secondary small mb-1 d-block">Dataset (comma-separated numbers)</label>
-          <input type="text" class="form-control fusion-input" id="datasetInput" placeholder="e.g. 4, 8, 6, 5, 3, 8, 9">
+          <label class="stat-label mb-1 d-block" for="datasetInput">Numbers (comma-separated)</label>
+          <input type="text" class="form-control fusion-input" id="datasetInput" placeholder="e.g. 2, 3, 45, 67, 89">
         </div>
         <div class="d-flex flex-wrap gap-2 mt-3">
-          <button class="btn btn-fusion" id="runBtn"><i class="fa-solid fa-play me-1"></i>Run Program</button>
+          <button class="btn btn-fusion" id="runBtn"><i class="fa-solid fa-calculator me-1"></i>Calculate</button>
           <button class="btn btn-fusion-secondary" id="clearBtn"><i class="fa-solid fa-eraser me-1"></i>Clear</button>
-          <button class="btn btn-fusion-secondary" id="resetBtn"><i class="fa-solid fa-rotate-left me-1"></i>Reset</button>
+          <button class="btn btn-fusion-secondary" id="resetBtn"><i class="fa-solid fa-rotate-left me-1"></i>Reset to example</button>
         </div>
       </div>
     </div>
@@ -41,11 +49,11 @@
       <div class="fusion-node p-4 h-100">
         <h5 class="fw-bold text-white mb-3"><i class="fa-solid fa-terminal me-2"></i>Output</h5>
         <div id="outputBox" class="output-box">
-          <p class="text-secondary mb-0">Run the program to see results here.</p>
+          <p class="stat-text mb-0">Select Calculate to see results here.</p>
         </div>
         <div id="explanationBox" class="mt-3 p-3 rounded-3 d-none" style="background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.3);">
-          <div class="small fw-bold mb-1" style="color:#34D399;"><i class="fa-solid fa-lightbulb me-1"></i>What this means</div>
-          <div id="explanationText" class="small text-light"></div>
+          <div class="fw-bold mb-1" style="color:#34D399;"><i class="fa-solid fa-lightbulb me-1"></i>What this means</div>
+          <div id="explanationText"></div>
         </div>
       </div>
     </div>
@@ -55,13 +63,14 @@
 
 {% block extra_scripts %}
 <script>
-const PLACEHOLDER = 'Run the program to see results here.';
+const PLACEHOLDER = 'Select Calculate to see results here.';
+const EXAMPLE = '2, 3, 45, 67, 89';
 
 function showToast(message, type) {
   const toast = document.createElement('div');
   toast.textContent = message;
   toast.style.cssText = `position:fixed;bottom:20px;right:20px;z-index:2000;padding:12px 20px;
-    border-radius:10px;color:#fff;font-size:.9rem;font-weight:500;
+    border-radius:10px;color:#fff;font-size:.95rem;font-weight:500;
     background:${type === 'error' ? '#DC2626' : '#059669'};box-shadow:0 10px 30px rgba(0,0,0,.4);`;
   document.body.appendChild(toast);
   setTimeout(() => toast.remove(), 3000);
@@ -88,44 +97,96 @@ function hideExplanation() {
 }
 
 function clearOutput() {
-  document.getElementById('outputBox').innerHTML = '<p class="text-secondary mb-0">' + PLACEHOLDER + '</p>';
+  document.getElementById('outputBox').innerHTML = '<p class="stat-text mb-0">' + PLACEHOLDER + '</p>';
   hideExplanation();
 }
 
-function resetAll() {
+// Clear: empties the input and the results
+function clearAll() {
   document.getElementById('datasetInput').value = '';
   clearOutput();
 }
 
-async function runStatistics() {
-  const dataset = document.getElementById('datasetInput').value.trim();
-  if (!dataset) return showToast('Please enter some numbers.', 'error');
+// Reset: restores the example input and clears the results
+function resetToExample() {
+  document.getElementById('datasetInput').value = EXAMPLE;
+  clearOutput();
+}
 
-  setOutput('Running…');
+function showError(message) {
+  setOutput(message);
   hideExplanation();
+  showToast(message, 'error');
+}
 
-  try {
-    const res = await fetch('/api/statistics', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({dataset: dataset})
-    });
-    const data = await res.json();
-    if (data.status !== 'success') {
-      setOutput(data.message);
-      return showToast(data.message, 'error');
-    }
-    setOutput(data.output);
-    showExplanation(data.explanation);
-    showToast('Program executed successfully.', 'success');
-  } catch (e) {
-    setOutput('Could not reach the backend.');
-    showToast('Could not reach the backend.', 'error');
+function parseNumbers(raw) {
+  const tokens = raw.split(',').map(t => t.trim());
+  if (tokens.some(t => t === '')) {
+    return {error: 'Check for empty values, such as a trailing or doubled comma.'};
   }
+  const nums = tokens.map(Number);
+  const bad = tokens.filter((t, i) => !Number.isFinite(nums[i]));
+  if (bad.length) {
+    return {error: 'Only numbers are allowed. Not a number: ' + bad.join(', ')};
+  }
+  if (nums.length < 2) {
+    return {error: 'Enter at least two numbers.'};
+  }
+  return {nums};
+}
+
+function computeStats(nums) {
+  const n = nums.length;
+  const mean = nums.reduce((a, b) => a + b, 0) / n;
+  const sorted = [...nums].sort((a, b) => a - b);
+  const mid = Math.floor(n / 2);
+  const median = n % 2 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2;
+  const variance = nums.reduce((a, x) => a + (x - mean) ** 2, 0) / (n - 1); // sample variance
+  return {n, mean, median, variance, sd: Math.sqrt(variance)};
+}
+
+function buildExplanation(s) {
+  let text = 'The mean is the average; the median is the middle value after sorting. ' +
+             'Standard deviation describes the spread of values around the mean. ';
+  const eps = 1e-9 * Math.max(1, Math.abs(s.median));
+  if (s.mean < s.median - eps) {
+    text += 'Here, the lower values pull the mean below the median. ';
+  } else if (s.mean > s.median + eps) {
+    text += 'Here, the higher values pull the mean above the median. ';
+  } else {
+    text += 'Here, the mean and median are equal, so the values are balanced around the center. ';
+  }
+  text += 'Sample variance uses n\u22121 in its calculation.';
+  return text;
+}
+
+function runStatistics() {
+  const raw = document.getElementById('datasetInput').value.trim();
+  if (!raw) return showError('Please enter some numbers.');
+
+  const parsed = parseNumbers(raw);
+  if (parsed.error) return showError(parsed.error);
+
+  const s = computeStats(parsed.nums);
+  const f = v => v.toFixed(2);
+  const rows = [
+    ['Count (n):', String(s.n)],
+    ['Mean (x\u0304):', f(s.mean)],
+    ['Median:', f(s.median)],
+    ['Sample variance (s\u00B2):', f(s.variance)],
+    ['Sample standard deviation (s):', f(s.sd)]
+  ];
+  const width = Math.max(...rows.map(r => r[0].length));
+  setOutput('Descriptive Summary\n\n' + rows.map(r => r[0].padEnd(width + 2) + r[1]).join('\n'));
+  showExplanation(buildExplanation(s));
+  showToast('Calculation complete.', 'success');
 }
 
 document.getElementById('runBtn').addEventListener('click', runStatistics);
-document.getElementById('clearBtn').addEventListener('click', clearOutput);
-document.getElementById('resetBtn').addEventListener('click', resetAll);
+document.getElementById('clearBtn').addEventListener('click', clearAll);
+document.getElementById('resetBtn').addEventListener('click', resetToExample);
+document.getElementById('datasetInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') runStatistics();
+});
 </script>
 {% endblock %}
