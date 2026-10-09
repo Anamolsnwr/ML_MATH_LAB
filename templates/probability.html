@@ -1,75 +1,137 @@
 {% extends 'base.html' %}
+{% block title %}Probability Core — ML × MATH{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center py-4">
-  <div class="col-lg-9">
-    <div class="fusion-node p-4 p-md-5">
-      
-      <!-- Title Block with Icon -->
-      <div class="d-flex align-items-center gap-3 mb-3">
-        <div class="p-3 rounded-4 d-flex align-items-center justify-content-center" 
-             style="background: linear-gradient(135deg, rgba(236, 72, 153, 0.2), rgba(168, 85, 247, 0.2)); color: #F472B6; width: 56px; height: 56px; border: 1px solid rgba(236, 72, 153, 0.3);">
-          <i class="fa-solid fa-chart-pie fa-xl"></i>
-        </div>
-        <div>
-          <h2 class="fw-bold text-white mb-0" style="font-family: var(--font-display);">Probability Core</h2>
-          <span class="text-secondary small font-monospace"><i class="fa-solid fa-code me-1 text-primary"></i> Backend: probability.py</span>
-        </div>
-      </div>
-
-      <!-- Description -->
-      <p class="text-secondary mb-4" style="font-size: 0.95rem;">
-        Compute event likelihoods, Bayesian conditional probabilities, and distribution ratios for ML classification models.
-      </p>
-
-      <!-- Input Form -->
-      <form id="probability-form" class="mb-4">
-        <div class="row g-3 mb-3">
-          <div class="col-md-6">
-            <label for="favorable-outcomes" class="form-label text-white fw-semibold mb-2">
-              <i class="fa-solid fa-bullseye me-2 text-info"></i>Favorable Outcomes (A)
-            </label>
-            <input type="number" id="favorable-outcomes" class="form-control fusion-input" value="1" min="0" placeholder="e.g. 1">
-          </div>
-          <div class="col-md-6">
-            <label for="total-outcomes" class="form-label text-white fw-semibold mb-2">
-              <i class="fa-solid fa-layer-group me-2 text-info"></i>Total Sample Space (S)
-            </label>
-            <input type="number" id="total-outcomes" class="form-control fusion-input" value="6" min="1" placeholder="e.g. 6">
-          </div>
-        </div>
-        <div class="form-text text-secondary mb-3 small">
-          <i class="fa-solid fa-circle-info me-1"></i> Ensure favorable outcomes do not exceed total sample space.
-        </div>
-
-        <!-- Action Buttons -->
-        <div class="d-flex flex-wrap align-items-center gap-3 mt-4">
-          <button type="submit" class="btn btn-fusion">
-            <i class="fa-solid fa-play"></i> Run Program
-          </button>
-          <button type="button" id="clear-btn" class="btn btn-fusion-secondary" style="border-color: rgba(245, 158, 11, 0.4); color: #FBBF24 !important;">
-            <i class="fa-solid fa-eraser me-1"></i> Clear
-          </button>
-          <button type="reset" class="btn btn-fusion-secondary" style="border-color: rgba(239, 68, 68, 0.4); color: #F87171 !important;">
-            <i class="fa-solid fa-rotate-right me-1"></i> Reset
-          </button>
-        </div>
-      </form>
-
-      <!-- Terminal Output Header -->
-      <div class="d-flex align-items-center justify-content-between mb-2 mt-5">
-        <h5 class="fw-bold text-white mb-0" style="font-family: var(--font-display);">
-          <i class="fa-solid fa-terminal me-2" style="color: #F472B6;"></i>Program Output
-        </h5>
-        <span class="fusion-badge"><i class="fa-solid fa-microchip"></i> STDOUT</span>
-      </div>
-
-      <!-- Terminal Output Box -->
-      <div id="output-terminal" class="output-box">
-        <span class="text-secondary">&gt;_ Click "Run Program" to execute script...</span>
-      </div>
-
+<section class="py-4">
+  <div class="d-flex align-items-center gap-3 mb-4">
+    <div class="p-3 rounded-4" style="background: rgba(236, 72, 153, 0.15); color: #F472B6;">
+      <i class="fa-solid fa-chart-pie fa-xl"></i>
+    </div>
+    <div>
+      <span class="fusion-badge" style="color: #F472B6; border-color: rgba(236, 72, 153, 0.3);">BAYESIAN ML</span>
+      <h1 class="fw-bold text-white mb-0 mt-1" style="font-family: var(--font-display);">Probability Core</h1>
+      <p class="text-secondary small mb-0">Work out how likely an event is from the number of ways it can happen.</p>
     </div>
   </div>
-</div>
+
+  <div class="fusion-node p-4 mb-4">
+    <h5 class="fw-bold text-white mb-3"><i class="fa-solid fa-circle-info me-2" style="color:#F472B6;"></i>About this module</h5>
+    <p class="text-secondary small mb-2"><strong class="text-light">What it is:</strong> Probability measures how likely something is, on a scale from 0 (impossible) to 1 (certain). It is the number of ways you can "win" divided by every possible outcome.</p>
+    <p class="text-secondary small mb-2"><strong class="text-light">Why machine learning cares:</strong> Classifiers rarely just say "yes" or "no". They output a probability, like "82% likely to be spam", and that number is what the model's decisions are built on.</p>
+    <p class="text-secondary small mb-0"><strong class="text-light">How to use it:</strong> Enter how many outcomes count as a win and how many outcomes are possible in total (rolling a 6 on a die is 1 favorable out of 6 total). The program gives the probability, the percentage, and the odds.</p>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-lg-6">
+      <div class="fusion-node p-4 h-100">
+        <h5 class="fw-bold text-white mb-3"><i class="fa-solid fa-sliders me-2"></i>Input</h5>
+        <div class="mb-3">
+          <label class="text-secondary small mb-1 d-block">Favorable outcomes</label>
+          <input type="number" min="0" class="form-control fusion-input" id="favorable" placeholder="e.g. 1">
+        </div>
+        <div class="mb-3">
+          <label class="text-secondary small mb-1 d-block">Total outcomes</label>
+          <input type="number" min="1" class="form-control fusion-input" id="total" placeholder="e.g. 6">
+        </div>
+        <div class="d-flex flex-wrap gap-2 mt-3">
+          <button class="btn btn-fusion" id="runBtn"><i class="fa-solid fa-play me-1"></i>Run Program</button>
+          <button class="btn btn-fusion-secondary" id="clearBtn"><i class="fa-solid fa-eraser me-1"></i>Clear</button>
+          <button class="btn btn-fusion-secondary" id="resetBtn"><i class="fa-solid fa-rotate-left me-1"></i>Reset</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-6">
+      <div class="fusion-node p-4 h-100">
+        <h5 class="fw-bold text-white mb-3"><i class="fa-solid fa-terminal me-2"></i>Output</h5>
+        <div id="outputBox" class="output-box">
+          <p class="text-secondary mb-0">Run the program to see results here.</p>
+        </div>
+        <div id="explanationBox" class="mt-3 p-3 rounded-3 d-none" style="background: rgba(236,72,153,0.1); border: 1px solid rgba(236,72,153,0.3);">
+          <div class="small fw-bold mb-1" style="color:#F472B6;"><i class="fa-solid fa-lightbulb me-1"></i>What this means</div>
+          <div id="explanationText" class="small text-light"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+const PLACEHOLDER = 'Run the program to see results here.';
+
+function showToast(message, type) {
+  const toast = document.createElement('div');
+  toast.textContent = message;
+  toast.style.cssText = `position:fixed;bottom:20px;right:20px;z-index:2000;padding:12px 20px;
+    border-radius:10px;color:#fff;font-size:.9rem;font-weight:500;
+    background:${type === 'error' ? '#DC2626' : '#059669'};box-shadow:0 10px 30px rgba(0,0,0,.4);`;
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 3000);
+}
+
+function setOutput(text) {
+  const box = document.getElementById('outputBox');
+  box.innerHTML = '';
+  const pre = document.createElement('pre');
+  pre.className = 'mb-0';
+  pre.style.cssText = 'color:#38BDF8;font-family:var(--font-mono);white-space:pre-wrap;';
+  pre.textContent = text;
+  box.appendChild(pre);
+}
+
+function showExplanation(text) {
+  document.getElementById('explanationText').textContent = text;
+  document.getElementById('explanationBox').classList.remove('d-none');
+}
+
+function hideExplanation() {
+  document.getElementById('explanationText').textContent = '';
+  document.getElementById('explanationBox').classList.add('d-none');
+}
+
+function clearOutput() {
+  document.getElementById('outputBox').innerHTML = '<p class="text-secondary mb-0">' + PLACEHOLDER + '</p>';
+  hideExplanation();
+}
+
+function resetAll() {
+  document.getElementById('favorable').value = '';
+  document.getElementById('total').value = '';
+  clearOutput();
+}
+
+async function runProbability() {
+  const favorable = parseInt(document.getElementById('favorable').value, 10);
+  const total = parseInt(document.getElementById('total').value, 10);
+  if (isNaN(favorable) || isNaN(total)) return showToast('Please enter whole numbers in both fields.', 'error');
+
+  setOutput('Running…');
+  hideExplanation();
+
+  try {
+    const res = await fetch('/api/probability', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({favorable: favorable, total: total})
+    });
+    const data = await res.json();
+    if (data.status !== 'success') {
+      setOutput(data.message);
+      return showToast(data.message, 'error');
+    }
+    setOutput(data.output);
+    showExplanation(data.explanation);
+    showToast('Program executed successfully.', 'success');
+  } catch (e) {
+    setOutput('Could not reach the backend.');
+    showToast('Could not reach the backend.', 'error');
+  }
+}
+
+document.getElementById('runBtn').addEventListener('click', runProbability);
+document.getElementById('clearBtn').addEventListener('click', clearOutput);
+document.getElementById('resetBtn').addEventListener('click', resetAll);
+</script>
 {% endblock %}
